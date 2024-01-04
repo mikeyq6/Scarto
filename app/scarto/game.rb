@@ -95,8 +95,67 @@ class Game
       player_hand.delete_at(player_hand.find_index(card))
       @state.current_trick.push(card)
 
+      if(@state.current_trick.length == 3)
+        process_end_of_hand
+      else
+        advance_player
+      end
     end
   end
+
+  def advance_player
+    cp_index = @players.find_index(@state.current_player)
+    cp_index = (cp_index + 1) % 3
+    @state.current_player = @players[cp_index]
+  end
+
+  def process_end_of_hand
+    winner = process_winner
+    winner.tricks.push(@state.current_trick)
+
+    @state.current_trick = []
+    @state.first_player = winner
+    @state.current_player = winner
+  end
+
+  def process_winner
+    trick = @state.current_trick
+    has_big_trump = trick.find { |card| card.suit == Card.suits[4] }
+
+    if !has_big_trump # find largest matching first card played suit
+      highest_card = trick[0]
+
+      if trick[1].suit == highest_card.suit && trick[1].is_greater_than(highest_card)
+        highest_card = trick[1]
+      end
+      if trick[2].suit == highest_card.suit && trick[2].is_greater_than(highest_card)
+        highest_card = trick[2]
+      end
+
+    else
+      if trick[0].suit == Card.suits[4]
+        highest_card = trick[0]
+      end
+      if trick[1].suit == Card.suits[4]
+        if highest_card == nil
+          highest_card = trick[1]
+        elsif trick[1].is_greater_than(highest_card)
+          highest_card = trick[1]
+        end
+      end
+      if trick[2].suit == Card.suits[4]
+        if highest_card == nil
+          highest_card = trick[2]
+        elsif trick[2].is_greater_than(highest_card)
+          highest_card = trick[2]
+        end
+      end
+    end
+
+    highest_card_index = trick.find_index(highest_card)
+    winning_player_index = (@players.find_index(@state.first_player) + highest_card_index) % 3
+
+    @players[winning_player_index]
 
   end
 

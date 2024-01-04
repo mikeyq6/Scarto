@@ -163,7 +163,29 @@ class TestGame < ActiveSupport::TestCase
     
     end
 
+    test "process_end_of_hand__correct_player_wins_trick" do
+        @g.add_player("Susan")
+        @g.deal_deck
+        @g.start_game
 
+        @g.state.first_player = @g.players[2]
+        @g.state.current_player = @g.players[2] # last player to play
+        c1 = Card.new(Card.suits[3], 4)
+        c2 = Card.new(Card.suits[3], 9)
+        c3 = Card.new(Card.suits[3], 2)
+        p1_tricks = @g.players[0].tricks.length
+        p2_tricks = @g.players[1].tricks.length
+        p3_tricks = @g.players[2].tricks.length
+
+        @g.state.current_trick = [ c1, c2, c3 ]
+        @g.process_end_of_hand
+
+        assert_equal(p1_tricks + 1, @g.players[0].tricks.length)
+        assert_equal(p2_tricks, @g.players[1].tricks.length)
+        assert_equal(p3_tricks, @g.players[2].tricks.length)
+        assert_equal(0, @g.state.current_trick.length)
+        assert_equal(@g.players[0].name, @g.state.current_player.name)
+        assert_equal(@g.players[0].name, @g.state.first_player.name)
     end
 
     test "check_card_is_valid__play_card_of_matching_suit__return_true" do
