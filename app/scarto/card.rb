@@ -33,6 +33,10 @@ class Card
   end
 
   def to_s
-    @name
+    if @name == nil
+      "nil"
+    else
+      @name
+    end
   end
 end
