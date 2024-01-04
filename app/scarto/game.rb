@@ -76,6 +76,10 @@ class Game
     @state.status = "Awaiting dealer swap"
   end
 
+  def start_game
+    @state.status = "Active"
+    @state.current_player = @players[@rnd.rand(3)]
+  end
 
   def swap_card_with_stock_card(hand, card, stock_card) 
     if !hand.find { |c| c.suit == card.suit && c.number == card.number }

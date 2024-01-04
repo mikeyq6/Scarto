@@ -71,6 +71,19 @@ class TestGame < ActiveSupport::TestCase
         assert_equal(3, @g.state.stock.length)
     end
 
+    test "start_game__status_updated_and_starting_player_is_selected" do
+        @g.add_player("Susan")
+        @g.deal_deck
+
+        assert_nil(@g.state.current_player, "No current player should be selected")
+        assert_not_equal("Active", @g.state.status, "Status should not be Active")
+
+        @g.start_game
+
+        assert_not_nil(@g.state.current_player, "Current player should be selected")
+        assert_equal("Active", @g.state.status)
+
+    end
 
     test "check_card_is_valid__play_card_of_matching_suit__return_true" do
         c1 = Card.new(Card.suits[0], 1)
