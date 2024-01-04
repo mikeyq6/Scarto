@@ -76,6 +76,21 @@ class Game
     @state.status = "Awaiting dealer swap"
   end
 
+
+  def swap_card_with_stock_card(hand, card, stock_card) 
+    if !hand.find { |c| c.suit == card.suit && c.number == card.number }
+      raise GameException.new "Attempt to swap card not in player hand"
+    elsif !@state.stock.find { |c| c.suit == stock_card.suit && c.number == stock_card.number }
+      raise GameException.new "Attempt to swap card with card not in stock"
+    else
+      card_index = hand.find_index(card)
+      stock_card_index = @state.stock.find_index(stock_card)
+      temp = hand[card_index]
+      hand[card_index] = stock_card
+      @state.stock[stock_card_index] = card
+    end
+  end
+
   def check_card_is_valid(hand, card, trick)
     if card.suit == Card.suits[4] && card.number == 0
       true

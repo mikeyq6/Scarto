@@ -38,6 +38,39 @@ class TestGame < ActiveSupport::TestCase
         assert_equal("Awaiting dealer swap", @g.state.status)
     end
 
+    test "swap_card_with_stock_card__attempt_to_swap_card_that_isnt_in_stock__throws_exception" do
+        @g.add_player("Susan")
+        @g.deal_deck
+        card_not_in_stock = @g.players[0].hand[0]
+
+        assert_raises(GameException) do
+            @g.swap_card_with_stock_card(@g.players[2].hand, @g.players[2].hand[0], card_not_in_stock)
+        end
+    end
+
+    test "swap_card_with_stock_card__attempt_to_swap_card_that_isnt_in_hand__throws_exception" do
+        @g.add_player("Susan")
+        @g.deal_deck
+        card_not_in_hand = @g.players[0].hand[0]
+
+        assert_raises(GameException) do
+            @g.swap_card_with_stock_card(@g.players[2].hand, card_not_in_hand, @g.state.stock[0])
+        end
+    end
+
+    test "swap_card_with_stock_card__card_exists_in_hand_and_stock__swap_is_successful" do
+        @g.add_player("Susan")
+        @g.deal_deck
+        card_to_swap = @g.players[2].hand[7]
+        stock_card = @g.state.stock[1]
+
+        @g.swap_card_with_stock_card(@g.players[2].hand, card_to_swap, stock_card)
+        assert(stock_card.in? @g.players[2].hand)
+        assert(card_to_swap.in? @g.state.stock)
+        assert_equal(25, @g.players[2].hand.length)
+        assert_equal(3, @g.state.stock.length)
+    end
+
 
     test "check_card_is_valid__play_card_of_matching_suit__return_true" do
         c1 = Card.new(Card.suits[0], 1)
