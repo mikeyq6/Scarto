@@ -6,11 +6,14 @@ require_relative "card"
 class Game
   attr_accessor :players, :deck
   attr_reader :id, :state
+  @rnd
 
   def initialize
     @state = State.new
     @players = []
     @deck = []
+    @rnd = Random.new
+
     create_deck
     shuffle_deck
     add_computer_players
@@ -51,11 +54,10 @@ class Game
   end
 
   def shuffle_deck
-    rnd = Random.new
     len = deck.length
 
     for index in 0..(len-1)
-      next_num = rnd.rand(len - index)
+      next_num = @rnd.rand(len - index)
       deck.push(deck[next_num])
       deck.delete_at(next_num)
     end
