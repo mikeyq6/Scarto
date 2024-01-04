@@ -79,6 +79,25 @@ class Game
   def start_game
     @state.status = "Active"
     @state.current_player = @players[@rnd.rand(3)]
+    @state.first_player = @state.current_player
+    @state.current_player.tricks.push(@state.stock)
+    @state.stock = []
+  end
+
+  def play_card(card)
+    player_hand = @state.current_player.hand
+
+    if !card.in? player_hand
+      raise GameException.new "Attempt to play a card not in the current player's hand"
+    elsif !check_card_is_valid(player_hand, card, @state.current_trick)
+      raise GameException.new "Attempt to play an invalid card"
+    else
+      player_hand.delete_at(player_hand.find_index(card))
+      @state.current_trick.push(card)
+
+    end
+  end
+
   end
 
   def swap_card_with_stock_card(hand, card, stock_card) 

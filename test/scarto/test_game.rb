@@ -82,6 +82,87 @@ class TestGame < ActiveSupport::TestCase
 
         assert_not_nil(@g.state.current_player, "Current player should be selected")
         assert_equal("Active", @g.state.status)
+        assert_equal(0, @g.state.stock.length)
+        assert_equal(1, @g.state.current_player.tricks.length)
+    end
+
+    test "play_card__card_doesnt_exist_in_players_hand__raises_exception" do
+        @g.add_player("Susan")
+        @g.deal_deck
+        @g.start_game
+
+        cp_index = @g.players.find_index(@g.state.current_player)
+        op_index = (cp_index + 1) % 3
+        card_not_in_players_hand = @g.players[op_index].hand[5]
+
+        assert_raises(GameException) do
+            @g.play_card(card_not_in_players_hand)
+        end
+    end
+
+    test "play_card__play_invalid_card__raises_exception" do
+        @g.add_player("Susan")
+        @g.deal_deck
+        @g.start_game
+
+        suit_card = Card.new(Card.suits[0], 8)
+        @g.state.current_trick.push(suit_card)
+
+        player_suit_card = Card.new(Card.suits[0], 4)
+        @g.state.current_player.hand[0] = player_suit_card
+
+        invalid_card = Card.new(Card.suits[1], "King")
+        
+        assert_raises(GameException) do
+            @g.play_card(invalid_card)
+        end
+    end
+
+    test "play_card__card_is_played_successfully__advances_player" do
+        @g.add_player("Susan")
+        @g.deal_deck
+        @g.start_game
+        @g.state.current_player = @g.players[1] # set starting player manually
+
+        @g.play_card(@g.state.current_player.hand[0])
+
+        assert_equal(24, @g.players[1].hand.length)
+        assert_equal(1, @g.state.current_trick.length)
+        assert_equal(@g.players[2].name, @g.state.current_player.name)
+
+        valid_card = Card.new(@g.state.current_trick[0].suit, 2)
+        @g.state.current_player.hand[3] = valid_card
+
+        @g.play_card(valid_card)
+
+        assert_equal(24, @g.players[2].hand.length)
+        assert_equal(2, @g.state.current_trick.length)
+        assert_equal(@g.players[0].name, @g.state.current_player.name)
+    end
+
+    test "play_card__last_card_of_hand_played__triggers_end_of_hand" do
+        @g.add_player("Susan")
+        @g.deal_deck
+        @g.start_game
+
+        @g.state.current_player = @g.players[1] # set starting player manually
+
+        valid_card = Card.new(Card.suits[2], 4)
+        @g.state.current_player.hand[3] = valid_card
+        @g.play_card(valid_card)
+
+        valid_card = Card.new(Card.suits[2], 2)
+        @g.state.current_player.hand[3] = valid_card
+        @g.play_card(valid_card)
+
+        valid_card = Card.new(Card.suits[2], 3)
+        @g.state.current_player.hand[3] = valid_card
+        @g.play_card(valid_card)
+
+        assert_equal(0, @g.state.current_trick.length)
+    
+    end
+
 
     end
 
