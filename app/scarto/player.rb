@@ -1,11 +1,10 @@
 class Player
-  attr_accessor :name, :cards, :tricks
   @@COMPUTER = 1
   @@HUMAN = 2
 
+  attr_accessor :name, :hand, :tricks, :type
   attr_reader :id
 
-  def initialize
   def self.COMPUTER
     @@COMPUTER
   end
@@ -13,6 +12,10 @@ class Player
     @@HUMAN
   end
 
+  def initialize(player_type, player_name)
+    @type = player_type
+    @name = player_name
     @tricks = []
+    @hand = []
   end
 end
