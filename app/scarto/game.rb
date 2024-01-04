@@ -47,12 +47,39 @@ class Game
     deck.delete_at(0)
   end
 
+  def check_card_is_valid(hand, card, trick)
+    if card.suit == Card.suits[4] && card.number == 0
+      true
+    elsif trick.length > 0
+      if card.suit == trick[0].suit
+        true
+      elsif !hand_contains_suit(hand, trick[0].suit)
+        true
+      else
+        false
+      end
+    else
+      true
+    end 
+  end
+
+  def hand_contains_suit(hand, target_suit) 
+    hand.each do |card|
+      if card.suit == target_suit
+        return true
+      end
+    end
+    return false
+  end
+
   def display_deck
     @deck.each do |card|
       puts "#{card}"
     end
   end
+
+
 end
 
-g = Game.new
-g.display_deck
+# g = Game.new
+# g.display_deck
