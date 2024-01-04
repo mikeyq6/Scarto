@@ -10,6 +10,20 @@ class TestGame < ActiveSupport::TestCase
     test "deck_created_with_78_cards" do
         assert_equal(78, @g.deck.length, "Wrong number of cards in deck")
     end
+    test "computer_players_created" do
+        assert_equal(2, @g.players.length, "Should have 2 computer players")
+        assert_equal(Player.COMPUTER, @g.players[0].type)
+        assert_equal(Player.COMPUTER, @g.players[1].type)
+    end
+
+    test "add_player__adds_human_player" do
+        @g.add_player("Susan")
+
+        assert_equal(3, @g.players.length, "Should be 3 players now")
+        assert_equal(Player.HUMAN, @g.players[2].type)
+        assert_equal("Susan", @g.players[2].name)
+    end
+
 
     test "check_card_is_valid__play_card_of_matching_suit__return_true" do
         c1 = Card.new(Card.suits[0], 1)

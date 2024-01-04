@@ -13,6 +13,22 @@ class Game
     @deck = []
     create_deck
     shuffle_deck
+    add_computer_players
+  end
+
+  def add_computer_players
+    @players.push(
+      Player.new(Player.COMPUTER, "PC1")
+    )
+    @players.push(
+      Player.new(Player.COMPUTER, "PC2")
+    )
+  end
+
+  def add_player(name)
+    @players.push(
+      Player.new(Player.HUMAN, name)
+    )
   end
 
   def create_deck
