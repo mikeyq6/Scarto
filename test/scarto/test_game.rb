@@ -24,6 +24,20 @@ class TestGame < ActiveSupport::TestCase
         assert_equal("Susan", @g.players[2].name)
     end
 
+    test "deal_deck__deals_correct_number_of_cards_to_players_and_stock" do
+        @g.add_player("Susan")
+        @g.deal_deck
+
+        assert_equal(25, @g.players[0].hand.length)
+        assert_equal(25, @g.players[1].hand.length)
+        assert_equal(25, @g.players[2].hand.length)
+        assert_equal(3, @g.state.stock.length)
+
+        assert_equal(0, @g.deck.length)
+
+        assert_equal("Awaiting dealer swap", @g.state.status)
+    end
+
 
     test "check_card_is_valid__play_card_of_matching_suit__return_true" do
         c1 = Card.new(Card.suits[0], 1)

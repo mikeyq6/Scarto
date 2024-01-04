@@ -65,6 +65,17 @@ class Game
     deck.delete_at(0)
   end
 
+  def deal_deck
+    for index in 0..(@deck.length-4)
+      @players[index % 3].hand.push(@deck[index])
+    end
+    for index in (@deck.length-3)..(@deck.length-1)
+      @state.stock.push(@deck[index])
+    end
+    @deck = []
+    @state.status = "Awaiting dealer swap"
+  end
+
   def check_card_is_valid(hand, card, trick)
     if card.suit == Card.suits[4] && card.number == 0
       true
