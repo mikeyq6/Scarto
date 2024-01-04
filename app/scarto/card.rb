@@ -29,7 +29,26 @@ class Card
     else
       @name = "#{number} of #{suit}"
     end
+  end
 
+  def is_greater_than(card)
+    if card.number.instance_of?(String) && @number.instance_of?(Integer)
+      false
+    elsif card.number.instance_of?(Integer) && @number.instance_of?(String)
+      true
+    elsif card.number.instance_of?(Integer) && @number.instance_of?(Integer)
+      @number > card.number
+    else
+      if @number == "Knave"
+        false
+      elsif @number == "Knight" && card.number != "Knave"
+        false
+      elsif @number == "Queen" && card.number == "King"
+        false
+      else
+        true
+      end
+    end
   end
 
   def to_s
