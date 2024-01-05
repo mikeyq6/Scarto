@@ -171,6 +171,16 @@ class Game
 
   end
 
+  def score_trick(trick)
+    if trick.length == 1
+      return trick[0].get_value
+    elsif trick.length == 2
+      return (trick[0].get_value + trick[1].get_value + 1) - 2
+    else
+      return (trick[0].get_value + trick[1].get_value + trick[2].get_value) - 2
+    end
+  end
+
   def swap_card_with_stock_card(hand, card, stock_card) 
     if !hand.find { |c| c.suit == card.suit && c.number == card.number }
       raise GameException.new "Attempt to swap card not in player hand"

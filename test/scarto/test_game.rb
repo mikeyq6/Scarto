@@ -264,6 +264,101 @@ class TestGame < ActiveSupport::TestCase
         assert_equal(@g.players[2].name, @g.state.first_player.name)
     end
 
+    test "score_trick__all_single_points_trick" do
+        c1 = Card.new(Card.suits[1], 4)
+        c2 = Card.new(Card.suits[1], 7)
+        c3 = Card.new(Card.suits[1], 1)
+        assert_equal(1, @g.score_trick([c1, c2, c3]))
+
+        c1 = Card.new(Card.suits[1], 10)
+        c2 = Card.new(Card.suits[3], 2)
+        c3 = Card.new(Card.suits[2], 1)
+        assert_equal(1, @g.score_trick([c1, c2, c3]))
+    end
+
+    test "score_trick__all_court_card_points_trick" do
+        c1 = Card.new(Card.suits[1], "King")
+        c2 = Card.new(Card.suits[1], "Queen")
+        c3 = Card.new(Card.suits[1], "Knight")
+        assert_equal(10, @g.score_trick([c1, c2, c3]))
+
+        c2 = Card.new(Card.suits[3], "Knave")
+        c3 = Card.new(Card.suits[1], "Knave")
+        assert_equal(7, @g.score_trick([c1, c2, c3]))
+
+        c1 = Card.new(Card.suits[1], "Queen")
+        c2 = Card.new(Card.suits[2], "Queen")
+        c3 = Card.new(Card.suits[3], "Queen")
+        assert_equal(10, @g.score_trick([c1, c2, c3]))
+
+        c1 = Card.new(Card.suits[1], "King")
+        c2 = Card.new(Card.suits[2], "King")
+        c3 = Card.new(Card.suits[3], "King")
+        assert_equal(13, @g.score_trick([c1, c2, c3]))
+
+        c1 = Card.new(Card.suits[1], "Knight")
+        c2 = Card.new(Card.suits[2], "Knight")
+        c3 = Card.new(Card.suits[3], "Knight")
+        assert_equal(7, @g.score_trick([c1, c2, c3]))
+    end
+
+    test "score_trick__mixed_big_trump_points_trick" do
+        c1 = Card.new(Card.suits[1], "King")
+        c2 = Card.new(Card.suits[4], 18)
+        c3 = Card.new(Card.suits[4], 2)
+        assert_equal(5, @g.score_trick([c1, c2, c3]))
+
+        c1 = Card.new(Card.suits[4], 20)
+        assert_equal(5, @g.score_trick([c1, c2, c3]))
+
+        c1 = Card.new(Card.suits[4], 21)
+        assert_equal(1, @g.score_trick([c1, c2, c3]))
+
+        c1 = Card.new(Card.suits[1], "Queen")
+        c2 = Card.new(Card.suits[4], 21)
+        c3 = Card.new(Card.suits[4], 20)
+        assert_equal(8, @g.score_trick([c1, c2, c3]))
+
+        c2 = Card.new(Card.suits[4], 1)
+        assert_equal(12, @g.score_trick([c1, c2, c3]))
+
+
+        c1 = Card.new(Card.suits[1], "Knave")
+        c2 = Card.new(Card.suits[2], 2)
+        c3 = Card.new(Card.suits[4], 1)
+        assert_equal(6, @g.score_trick([c1, c2, c3]))
+    end
+
+    test "score_trick__2_card_trick" do
+        c1 = Card.new(Card.suits[1], 4)
+        c2 = Card.new(Card.suits[1], 7)
+        assert_equal(1, @g.score_trick([c1, c2]))
+
+        c1 = Card.new(Card.suits[1], "King")
+        c2 = Card.new(Card.suits[1], 7)
+        assert_equal(5, @g.score_trick([c1, c2]))
+
+        c1 = Card.new(Card.suits[1], "King")
+        c2 = Card.new(Card.suits[3], "Queen")
+        assert_equal(8, @g.score_trick([c1, c2]))
+
+        c1 = Card.new(Card.suits[4], 20)
+        c2 = Card.new(Card.suits[3], "Knight")
+        assert_equal(7, @g.score_trick([c1, c2]))
+
+        c1 = Card.new(Card.suits[4], 1)
+        c2 = Card.new(Card.suits[1], "Knave")
+        assert_equal(6, @g.score_trick([c1, c2]))
+
+        c2 = Card.new(Card.suits[4], 20)
+        assert_equal(9, @g.score_trick([c1, c2]))
+    end
+
+    test "score_trick__matto" do
+        matto = Card.new(Card.suits[4], 0)
+        assert_equal(4, @g.score_trick([ matto ]))
+    end
+
     test "check_card_is_valid__play_card_of_matching_suit__return_true" do
         c1 = Card.new(Card.suits[0], 1)
         c2 = Card.new(Card.suits[0], 2)
