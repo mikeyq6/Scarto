@@ -122,6 +122,7 @@ class TestGame < ActiveSupport::TestCase
         @g.add_player("Susan")
         @g.deal_deck
         @g.start_game
+        @g.state.first_player = @g.players[1]
         @g.state.current_player = @g.players[1] # set starting player manually
 
         @g.play_card(@g.state.current_player.hand[0])
@@ -140,11 +141,28 @@ class TestGame < ActiveSupport::TestCase
         assert_equal(@g.players[0].name, @g.state.current_player.name)
     end
 
+    test "play_card__matto_is_played__player_gets_trick" do
+        @g.add_player("Susan")
+        @g.deal_deck
+        @g.start_game
+        @g.state.first_player = @g.players[1]
+        @g.state.current_player = @g.players[1] # set starting player manually
+        p1_tricks = @g.players[1].tricks.length
+
+        matto = Card.new(Card.suits[4], 0)
+        @g.state.current_player.hand[5] = matto
+
+        @g.play_card(matto)
+
+        assert_equal(p1_tricks + 1, @g.state.first_player.tricks.length)
+    end
+
     test "play_card__last_card_of_hand_played__triggers_end_of_hand" do
         @g.add_player("Susan")
         @g.deal_deck
         @g.start_game
 
+        @g.state.first_player = @g.players[1]
         @g.state.current_player = @g.players[1] # set starting player manually
 
         valid_card = Card.new(Card.suits[2], 4)
@@ -186,6 +204,64 @@ class TestGame < ActiveSupport::TestCase
         assert_equal(0, @g.state.current_trick.length)
         assert_equal(@g.players[0].name, @g.state.current_player.name)
         assert_equal(@g.players[0].name, @g.state.first_player.name)
+    end
+
+    test "process_end_of_hand__correct_player_wins_trick_when_matto_played_first" do
+        @g.add_player("Susan")
+        @g.deal_deck
+        @g.start_game
+
+        @g.state.first_player = @g.players[2]
+        @g.state.current_player = @g.players[2] 
+        matto = Card.new(Card.suits[4], 0)
+        c2 = Card.new(Card.suits[3], 9)
+        c3 = Card.new(Card.suits[3], 2)
+        p1_tricks = @g.players[0].tricks.length
+        p2_tricks = @g.players[1].tricks.length
+        p3_tricks = @g.players[2].tricks.length
+
+        @g.state.current_player.hand[5] = matto
+        @g.play_card(matto)
+        @g.state.current_player.hand[2] = c2
+        @g.play_card(c2)
+        @g.state.current_player.hand[18] = c3
+        @g.play_card(c3)
+
+        assert_equal(0, @g.state.current_trick.length)
+        assert_equal(p1_tricks + 1, @g.players[0].tricks.length) # extra trick for playing matto
+        assert_equal(p2_tricks, @g.players[1].tricks.length)
+        assert_equal(p3_tricks + 1, @g.players[2].tricks.length)
+        assert_equal(@g.players[0].name, @g.state.current_player.name)
+        assert_equal(@g.players[0].name, @g.state.first_player.name)
+    end
+
+    test "process_end_of_hand__correct_player_wins_trick_when_matto_played_last" do
+        @g.add_player("Susan")
+        @g.deal_deck
+        @g.start_game
+
+        @g.state.first_player = @g.players[2]
+        @g.state.current_player = @g.players[2] 
+        matto = Card.new(Card.suits[4], 0)
+        c2 = Card.new(Card.suits[3], 9)
+        c3 = Card.new(Card.suits[3], 2)
+        p1_tricks = @g.players[0].tricks.length
+        p2_tricks = @g.players[1].tricks.length
+        p3_tricks = @g.players[2].tricks.length
+
+        @g.state.current_player.hand[5] = c2
+        @g.play_card(c2)
+        @g.state.current_player.hand[2] = c3
+        @g.play_card(c3)
+        @g.state.current_player.hand[18] = matto
+        @g.play_card(matto)
+
+        assert_equal(0, @g.state.current_trick.length)
+        assert_equal(p1_tricks, @g.players[0].tricks.length) # extra trick for playing matto
+        assert_equal(p2_tricks + 1, @g.players[1].tricks.length)
+        assert_equal(p3_tricks + 1, @g.players[2].tricks.length)
+        assert_equal(@g.players[2].name, @g.state.current_player.name)
+        assert_equal(@g.players[2].name, @g.state.first_player.name)
     end
 
     test "check_card_is_valid__play_card_of_matching_suit__return_true" do

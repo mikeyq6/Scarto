@@ -18,4 +18,13 @@ class Player
     @tricks = []
     @hand = []
   end
+
+  def has_matto_trick
+    if tricks.find { |t| t[0].suit == Card.suits[4] && t[0].number == 0 }
+        return true
+    end
+
+    false
+  end
+
 end

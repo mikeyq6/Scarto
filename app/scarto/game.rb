@@ -93,9 +93,15 @@ class Game
       raise GameException.new "Attempt to play an invalid card"
     else
       player_hand.delete_at(player_hand.find_index(card))
-      @state.current_trick.push(card)
 
-      if(@state.current_trick.length == 3)
+      if card.suit == Card.suits[4] && card.number == 0
+        @state.trick_length = 2
+        @state.current_player.tricks.push([ card ])
+      else
+        @state.current_trick.push(card)
+      end
+
+      if(@state.current_trick.length == @state.trick_length)
         process_end_of_hand
       else
         advance_player
@@ -116,6 +122,7 @@ class Game
     @state.current_trick = []
     @state.first_player = winner
     @state.current_player = winner
+    @state.trick_length = 3
   end
 
   def process_winner
@@ -128,10 +135,11 @@ class Game
       if trick[1].suit == highest_card.suit && trick[1].is_greater_than(highest_card)
         highest_card = trick[1]
       end
-      if trick[2].suit == highest_card.suit && trick[2].is_greater_than(highest_card)
-        highest_card = trick[2]
+      if(@state.trick_length == 3)
+        if trick[2].suit == highest_card.suit && trick[2].is_greater_than(highest_card)
+          highest_card = trick[2]
+        end
       end
-
     else
       if trick[0].suit == Card.suits[4]
         highest_card = trick[0]
@@ -154,6 +162,10 @@ class Game
 
     highest_card_index = trick.find_index(highest_card)
     winning_player_index = (@players.find_index(@state.first_player) + highest_card_index) % 3
+
+    if @players[winning_player_index].has_matto_trick
+      winning_player_index = (winning_player_index + 1) % 3
+    end
 
     @players[winning_player_index]
 
