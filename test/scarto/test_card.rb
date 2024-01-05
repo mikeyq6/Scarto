@@ -39,4 +39,34 @@ class TestCard < ActiveSupport::TestCase
         assert(c1.is_greater_than(c2), "Knave is bigger than Ace")
         assert(!c2.is_greater_than(c1), "Ace is smaller than Knave")
     end
+
+    test "get_value" do
+        c1 = Card.new(Card.suits[0], 1)
+        assert_equal(1, c1.get_value)
+        c1 = Card.new(Card.suits[0], 10)
+        assert_equal(1, c1.get_value)
+        c1 = Card.new(Card.suits[0], "Knave")
+        assert_equal(2, c1.get_value)
+        c1 = Card.new(Card.suits[0], "Knight")
+        assert_equal(3, c1.get_value)
+        c1 = Card.new(Card.suits[0], "Queen")
+        assert_equal(4, c1.get_value)
+        c1 = Card.new(Card.suits[0], "King")
+        assert_equal(5, c1.get_value)
+        c1 = Card.new(Card.suits[4], 0) # matto
+        assert_equal(4, c1.get_value)
+        c1 = Card.new(Card.suits[4], 20) 
+        assert_equal(5, c1.get_value)
+        c1 = Card.new(Card.suits[4], 1) 
+        assert_equal(5, c1.get_value)
+        c1 = Card.new(Card.suits[4], 12) 
+        assert_equal(1, c1.get_value)
+        c1 = Card.new(Card.suits[4], 21) 
+        assert_equal(1, c1.get_value)
+        c1 = Card.new(Card.suits[4], 2) 
+        assert_equal(1, c1.get_value)
+        c1 = Card.new(Card.suits[4], 13) 
+        assert_equal(1, c1.get_value)
+
+    end
 end

@@ -51,6 +51,28 @@ class Card
     end
   end
 
+  def get_value
+    if @suit == @@suits[4]
+      if @number == 0
+        4
+      elsif @number == 1 || @number == 20
+        5
+      else
+        1
+      end
+    elsif @number == "King"
+      5
+    elsif @number == "Queen"
+      4
+    elsif @number == "Knight"
+      3
+    elsif @number == "Knave"
+      2
+    else
+      1
+    end
+  end
+
   def to_s
     if @name == nil
       "nil"
