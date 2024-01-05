@@ -406,4 +406,56 @@ class TestGame < ActiveSupport::TestCase
         assert(result)
     end
 
+    test "process_game_winner__correct_player_wins__no_other_tricks" do
+        @g.add_player("Susan")
+
+        c1 = Card.new(Card.suits[0], 1)
+        c2 = Card.new(Card.suits[0], 2)
+        c3 = Card.new(Card.suits[1], 1)
+        @g.players[0].tricks.push([c1, c2, c3])
+
+        @g.process_game_winner
+        assert_equal(@g.players[0], @g.state.winning_player)
+    end
+
+    test "process_game_winner__correct_player_wins__all_players_have_tricks" do
+        @g.add_player("Susan")
+
+        c1 = Card.new(Card.suits[0], 1)
+        c2 = Card.new(Card.suits[0], 2)
+        c3 = Card.new(Card.suits[1], 1)
+        @g.players[0].tricks.push([c1, c2, c3])
+
+        c1 = Card.new(Card.suits[0], "King")
+        c2 = Card.new(Card.suits[0], 2)
+        c3 = Card.new(Card.suits[1], 1)
+        @g.players[1].tricks.push([c1, c2, c3])
+
+        c1 = Card.new(Card.suits[0], "Knave")
+        c2 = Card.new(Card.suits[0], 2)
+        c3 = Card.new(Card.suits[4], 20)
+        @g.players[2].tricks.push([c1, c2, c3])
+
+        @g.process_game_winner
+        assert_equal(@g.players[2], @g.state.winning_player)
+    end
+
+    test "process_game_winner__correct_player_wins__tricks_with_matto" do
+        @g.add_player("Susan")
+
+        c1 = Card.new(Card.suits[0], 1)
+        c2 = Card.new(Card.suits[0], 2)
+        c3 = Card.new(Card.suits[1], 1)
+        @g.players[0].tricks.push([c1, c2, c3])
+
+        c1 = Card.new(Card.suits[0], "King")
+        c2 = Card.new(Card.suits[1], 1)
+        @g.players[1].tricks.push([ c1, c2 ])
+
+        c1 = Card.new(Card.suits[4], 20)
+        @g.players[2].tricks.push([ c1 ])
+
+        @g.process_game_winner
+        assert_equal(@g.players[1], @g.state.winning_player)
+    end
 end

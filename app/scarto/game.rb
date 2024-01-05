@@ -106,6 +106,11 @@ class Game
       else
         advance_player
       end
+
+      if @state.current_player.hand.length == 0
+        @g.state.status = "Finished"
+        process_game_winner
+      end
     end
   end
 
@@ -116,7 +121,7 @@ class Game
   end
 
   def process_end_of_hand
-    winner = process_winner
+    winner = process_hand_winner
     winner.tricks.push(@state.current_trick)
 
     @state.current_trick = []
@@ -125,7 +130,7 @@ class Game
     @state.trick_length = 3
   end
 
-  def process_winner
+  def process_hand_winner
     trick = @state.current_trick
     has_big_trump = trick.find { |card| card.suit == Card.suits[4] }
 
@@ -169,6 +174,20 @@ class Game
 
     @players[winning_player_index]
 
+  end
+
+  def process_game_winner
+    @players.each do |p|
+      score = 0
+      p.tricks.each do |trick|
+        score += score_trick trick
+      end
+      p.score = score
+
+      if !@state.winning_player || score > @state.winning_player.score
+        @state.winning_player = p
+      end
+    end
   end
 
   def score_trick(trick)

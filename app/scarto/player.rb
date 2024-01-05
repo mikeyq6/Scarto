@@ -2,7 +2,7 @@ class Player
   @@COMPUTER = 1
   @@HUMAN = 2
 
-  attr_accessor :name, :hand, :tricks, :type
+  attr_accessor :name, :hand, :tricks, :type, :score
   attr_reader :id
 
   def self.COMPUTER
@@ -17,6 +17,7 @@ class Player
     @name = player_name
     @tricks = []
     @hand = []
+    @score = 0
   end
 
   def has_matto_trick

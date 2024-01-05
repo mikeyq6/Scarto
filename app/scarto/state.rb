@@ -1,5 +1,5 @@
 class State
-  attr_accessor :status, :current_player, :first_player, :current_trick, :stock, :trick_length
+  attr_accessor :status, :current_player, :first_player, :current_trick, :stock, :trick_length, :winning_player
 
   def initialize
     @status = "Uninitialized"
