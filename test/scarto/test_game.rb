@@ -7,16 +7,17 @@ class TestGame < ActiveSupport::TestCase
         @g = Game.new
     end
 
-    test "deck_created_with_78_cards" do
+    test "deck created with 78 cards" do
         assert_equal(78, @g.deck.length, "Wrong number of cards in deck")
     end
-    test "computer_players_created" do
+    
+    test "computer players created" do
         assert_equal(2, @g.players.length, "Should have 2 computer players")
         assert_equal(Player.COMPUTER, @g.players[0].type)
         assert_equal(Player.COMPUTER, @g.players[1].type)
     end
 
-    test "add_player__adds_human_player" do
+    test "add_player - adds human player" do
         @g.add_player("Susan")
 
         assert_equal(3, @g.players.length, "Should be 3 players now")
@@ -24,7 +25,7 @@ class TestGame < ActiveSupport::TestCase
         assert_equal("Susan", @g.players[2].name)
     end
 
-    test "deal_deck__deals_correct_number_of_cards_to_players_and_stock" do
+    test "deal_deck - deals correct number of cards to players and stock" do
         @g.add_player("Susan")
         @g.deal_deck
 
@@ -38,7 +39,7 @@ class TestGame < ActiveSupport::TestCase
         assert_equal("Awaiting dealer swap", @g.state.status)
     end
 
-    test "swap_card_with_stock_card__attempt_to_swap_card_that_isnt_in_stock__throws_exception" do
+    test "swap card with stock card - attempt to swap card that isnt in stock - throws exception" do
         @g.add_player("Susan")
         @g.deal_deck
         card_not_in_stock = @g.players[0].hand[0]
@@ -48,7 +49,7 @@ class TestGame < ActiveSupport::TestCase
         end
     end
 
-    test "swap_card_with_stock_card__attempt_to_swap_card_that_isnt_in_hand__throws_exception" do
+    test "swap card with stock card - attempt to swap card that isnt in hand - throws exception" do
         @g.add_player("Susan")
         @g.deal_deck
         card_not_in_hand = @g.players[0].hand[0]
@@ -58,7 +59,7 @@ class TestGame < ActiveSupport::TestCase
         end
     end
 
-    test "swap_card_with_stock_card__card_exists_in_hand_and_stock__swap_is_successful" do
+    test "swap card with stock card - card exists in hand and stock - swap is successful" do
         @g.add_player("Susan")
         @g.deal_deck
         card_to_swap = @g.players[2].hand[7]
@@ -71,7 +72,7 @@ class TestGame < ActiveSupport::TestCase
         assert_equal(3, @g.state.stock.length)
     end
 
-    test "start_game__status_updated_and_starting_player_is_selected" do
+    test "start game -- status updated and starting player is selected" do
         @g.add_player("Susan")
         @g.deal_deck
 
@@ -86,7 +87,7 @@ class TestGame < ActiveSupport::TestCase
         assert_equal(1, @g.state.current_player.tricks.length)
     end
 
-    test "play_card__card_doesnt_exist_in_players_hand__raises_exception" do
+    test "play card - card doesnt exist in players hand - raises exception" do
         @g.add_player("Susan")
         @g.deal_deck
         @g.start_game
@@ -100,7 +101,7 @@ class TestGame < ActiveSupport::TestCase
         end
     end
 
-    test "play_card__play_invalid_card__raises_exception" do
+    test "play card - play invalid card - raises exception" do
         @g.add_player("Susan")
         @g.deal_deck
         @g.start_game
@@ -118,7 +119,7 @@ class TestGame < ActiveSupport::TestCase
         end
     end
 
-    test "play_card__card_is_played_successfully__advances_player" do
+    test "play card - card is played successfully - advances player" do
         @g.add_player("Susan")
         @g.deal_deck
         @g.start_game
@@ -141,7 +142,7 @@ class TestGame < ActiveSupport::TestCase
         assert_equal(@g.players[0].name, @g.state.current_player.name)
     end
 
-    test "play_card__matto_is_played__player_gets_trick" do
+    test "play card - matto is played - player gets trick" do
         @g.add_player("Susan")
         @g.deal_deck
         @g.start_game
@@ -157,7 +158,7 @@ class TestGame < ActiveSupport::TestCase
         assert_equal(p1_tricks + 1, @g.state.first_player.tricks.length)
     end
 
-    test "play_card__last_card_of_hand_played__triggers_end_of_hand" do
+    test "play card - last card of hand played - triggers end of hand" do
         @g.add_player("Susan")
         @g.deal_deck
         @g.start_game
@@ -181,7 +182,7 @@ class TestGame < ActiveSupport::TestCase
     
     end
 
-    test "process_end_of_hand__correct_player_wins_trick" do
+    test "process end of hand - correct player wins trick" do
         @g.add_player("Susan")
         @g.deal_deck
         @g.start_game
@@ -206,7 +207,7 @@ class TestGame < ActiveSupport::TestCase
         assert_equal(@g.players[0].name, @g.state.first_player.name)
     end
 
-    test "process_end_of_hand__correct_player_wins_trick_when_matto_played_first" do
+    test "process end of hand - correct player wins trick when matto played first" do
         @g.add_player("Susan")
         @g.deal_deck
         @g.start_game
@@ -235,7 +236,7 @@ class TestGame < ActiveSupport::TestCase
         assert_equal(@g.players[0].name, @g.state.first_player.name)
     end
 
-    test "process_end_of_hand__correct_player_wins_trick_when_matto_played_last" do
+    test "process end of hand - correct player wins trick when matto played last" do
         @g.add_player("Susan")
         @g.deal_deck
         @g.start_game
@@ -264,7 +265,7 @@ class TestGame < ActiveSupport::TestCase
         assert_equal(@g.players[2].name, @g.state.first_player.name)
     end
 
-    test "score_trick__all_single_points_trick" do
+    test "score trick - all single points trick" do
         c1 = Card.new(Card.suits[1], 4)
         c2 = Card.new(Card.suits[1], 7)
         c3 = Card.new(Card.suits[1], 1)
@@ -276,7 +277,7 @@ class TestGame < ActiveSupport::TestCase
         assert_equal(1, @g.score_trick([c1, c2, c3]))
     end
 
-    test "score_trick__all_court_card_points_trick" do
+    test "score trick - all court card points trick" do
         c1 = Card.new(Card.suits[1], "King")
         c2 = Card.new(Card.suits[1], "Queen")
         c3 = Card.new(Card.suits[1], "Knight")
@@ -302,7 +303,7 @@ class TestGame < ActiveSupport::TestCase
         assert_equal(7, @g.score_trick([c1, c2, c3]))
     end
 
-    test "score_trick__mixed_big_trump_points_trick" do
+    test "score trick - mixed big trump points trick" do
         c1 = Card.new(Card.suits[1], "King")
         c2 = Card.new(Card.suits[4], 18)
         c3 = Card.new(Card.suits[4], 2)
@@ -329,7 +330,7 @@ class TestGame < ActiveSupport::TestCase
         assert_equal(6, @g.score_trick([c1, c2, c3]))
     end
 
-    test "score_trick__2_card_trick" do
+    test "score trick - 2 card trick" do
         c1 = Card.new(Card.suits[1], 4)
         c2 = Card.new(Card.suits[1], 7)
         assert_equal(1, @g.score_trick([c1, c2]))
@@ -354,12 +355,12 @@ class TestGame < ActiveSupport::TestCase
         assert_equal(9, @g.score_trick([c1, c2]))
     end
 
-    test "score_trick__matto" do
+    test "score trick - matto" do
         matto = Card.new(Card.suits[4], 0)
         assert_equal(4, @g.score_trick([ matto ]))
     end
 
-    test "check_card_is_valid__play_card_of_matching_suit__return_true" do
+    test "check card is valid - play card of matching suit - return true" do
         c1 = Card.new(Card.suits[0], 1)
         c2 = Card.new(Card.suits[0], 2)
 
@@ -370,7 +371,7 @@ class TestGame < ActiveSupport::TestCase
         assert(result)
     end
 
-    test "check_card_is_valid__play_card_out_of_suit_when_hand_has_no_suit__return_true" do
+    test "check card is valid - play card out of suit when hand has no suit - return true" do
         c1 = Card.new(Card.suits[0], 1)
         c2 = Card.new(Card.suits[2], 2)
         c3 = Card.new(Card.suits[1], 1)
@@ -382,7 +383,7 @@ class TestGame < ActiveSupport::TestCase
         assert(result)
     end
 
-    test "check_card_is_valid__play_card_out_of_suit_when_hand_has_suit__return_false" do
+    test "check card is valid - play card out of suit when hand has suit - return false" do
         c1 = Card.new(Card.suits[0], 1)
         c2 = Card.new(Card.suits[0], 2)
         c3 = Card.new(Card.suits[1], 1)
@@ -394,7 +395,7 @@ class TestGame < ActiveSupport::TestCase
         assert_not(result)
     end
 
-    test "check_card_is_valid__play_matto_when_hand_has_suit__return_true" do
+    test "check card is valid - play matto when hand has suit - return true" do
         c1 = Card.new(Card.suits[0], 1)
         c2 = Card.new(Card.suits[0], 2)
         matto = Card.new(Card.suits[4], 0)
@@ -406,7 +407,7 @@ class TestGame < ActiveSupport::TestCase
         assert(result)
     end
 
-    test "process_game_winner__correct_player_wins__no_other_tricks" do
+    test "process game winner - correct player wins - no other tricks" do
         @g.add_player("Susan")
 
         c1 = Card.new(Card.suits[0], 1)
@@ -418,7 +419,7 @@ class TestGame < ActiveSupport::TestCase
         assert_equal(@g.players[0], @g.state.winning_player)
     end
 
-    test "process_game_winner__correct_player_wins__all_players_have_tricks" do
+    test "process game winner - correct player wins - all players have tricks" do
         @g.add_player("Susan")
 
         c1 = Card.new(Card.suits[0], 1)
@@ -440,7 +441,7 @@ class TestGame < ActiveSupport::TestCase
         assert_equal(@g.players[2], @g.state.winning_player)
     end
 
-    test "process_game_winner__correct_player_wins__tricks_with_matto" do
+    test "process game winner - correct player wins - tricks with matto" do
         @g.add_player("Susan")
 
         c1 = Card.new(Card.suits[0], 1)
