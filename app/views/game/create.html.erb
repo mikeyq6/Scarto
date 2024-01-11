@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Scarto</h1>
+
+            <h2>Game List:</h2>
+            <div class="row">
+                <div class="col">
+                    1. <%= @name %>
+                </div>
+                <div class="col">
+                    <%= link_to '/game/1' %>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

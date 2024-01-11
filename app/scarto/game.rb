@@ -247,6 +247,3 @@ class Game
 
 
 end
-
-# g = Game.new
-# g.display_deck
