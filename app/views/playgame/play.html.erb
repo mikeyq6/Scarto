@@ -1,0 +1,19 @@
+<h1>Playing!</h1>
+
+<h4>Welcome <%= @gameObj.firstname %>
+
+<h4>Players: </h4>
+
+<% @game.players.each do |p| %>
+<div class="player">
+    <h4><%= p.name %>
+
+    <div class="hand">
+        <% p.hand.each do |card| %>
+        <div class="gamecard">
+            <%= image_tag("card back black.png", class: 'card_img') %>
+        </div>
+        <% end %>
+    </div>
+</div>
+<% end %>

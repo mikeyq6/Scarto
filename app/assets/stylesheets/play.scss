@@ -1,0 +1,19 @@
+.player {
+    .hand {
+        display: block;
+
+        .gamecard {
+            display: inline-block;
+            position: relative;
+            margin-left: -120px;
+
+            &:first-child {
+                margin-left: 0;
+            }
+
+            img.card_img {
+                width: 150px;
+            }
+        }
+    }
+}

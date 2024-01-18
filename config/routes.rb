@@ -9,5 +9,7 @@ Rails.application.routes.draw do
   # put "/game/:id", to: "game#update" # usually a submitted form
   # delete "/game/:id", to: "game#destroy"
 
+  get "/play/:id", to: "playgame#play"
+
   resources :games
 end

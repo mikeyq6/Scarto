@@ -3,7 +3,7 @@ require_relative "trick"
 require_relative "player"
 require_relative "card"
 
-class Game
+class Cardgame
   attr_accessor :players, :deck
   attr_reader :id, :state
   @rnd
@@ -17,6 +17,8 @@ class Game
     create_deck
     shuffle_deck
     add_computer_players
+
+    @state.status = 'Initialized'
   end
 
   def add_computer_players
@@ -245,5 +247,9 @@ class Game
     end
   end
 
+  def to_json(options={})
+     options[:except] ||= [:rnd]
+     super(options)
+   end
 
 end

@@ -1,10 +1,10 @@
-require_relative "../../app/scarto/game"
+require_relative "../../app/scarto/cardgame"
 require_relative "../test_helper"
 
 class TestGame < ActiveSupport::TestCase
 
     def setup
-        @g = Game.new
+        @g = Cardgame.new
     end
 
     test "deck created with 78 cards" do

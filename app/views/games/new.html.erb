@@ -25,10 +25,11 @@
             <%= form.text_field :firstname, class: 'form-control' %>
         </div>
 
-        <%= form.submit 'Start new game', class: 'btn btn-primary' %>
+        <div class="button-row">
+        <%= form.submit 'Create new game', class: 'btn btn-primary' %>
+        <%= link_to 'Cancel', games_path(), class: 'btn btn-secondary' %>
+        </div>
 
         <% end %>
     </div>
 </div>
-
-<%= link_to 'Cancel', games_path(), class: 'btn btn-secondary' %>
