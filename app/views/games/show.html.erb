@@ -1,0 +1,11 @@
+
+<h1>Scarto</h1>
+
+<p>ID: <%= @game.id %></p>
+<p>Firstname: <%= @game.firstname %></p>
+
+<div class="button-row">
+    <%= link_to 'Edit', edit_game_path(@game), class: 'btn btn-primary' %>
+    <%= button_to 'Delete', game_path(@game), method: :delete, class: 'btn btn-danger' %>
+    <%= link_to 'Show all', games_path(@game), class: 'btn btn-secondary' %>
+</div>

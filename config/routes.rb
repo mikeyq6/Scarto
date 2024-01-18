@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  root 'game#index'
+  # root 'game#index'
   
   # get "/game", to: "game#index"
   # get "/game/new", to: "game#new"
@@ -9,5 +9,5 @@ Rails.application.routes.draw do
   # put "/game/:id", to: "game#update" # usually a submitted form
   # delete "/game/:id", to: "game#destroy"
 
-  resources :game, only: [ :index, :show, :create ]
+  resources :games
 end

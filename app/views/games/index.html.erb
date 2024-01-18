@@ -1,0 +1,29 @@
+
+<h1>Scarto</h1>
+
+<h2>Current Games</h2>
+<div class="row mb-4">
+    <div class="col">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <% @games.each do |game| %>
+                <tr>
+                    <td><%= game.firstname %></td>
+                    <td><%= link_to 'View', game_path(game), class: 'btn btn-sm btn-secondary' %></td>
+                    <td><%= link_to 'Edit', edit_game_path(game), class: 'btn btn-sm btn-secondary' %></td>
+                    <td><%= button_to 'Delete', game_path(game), method: :delete, class: 'btn btn-sm btn-danger' %></td>
+                </tr>
+                <% end %>
+            </tbody>
+        </table>
+
+        <br/>
+        <%= link_to 'Create new Game', new_game_path, class: 'btn btn-primary' %>
+    </div>
+</div>
