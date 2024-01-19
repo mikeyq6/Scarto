@@ -35,8 +35,8 @@ class Card
     end
   end
 
-  def generate_image_name
-    if suit == 'Trumps'
+  def generate_image_name(type)
+    if suit == 'Trumps' && type == Player.HUMAN
       @name = "#{suit}_#{number}.png"
     else
       @name = "card back black.png"

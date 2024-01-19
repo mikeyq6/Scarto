@@ -18,6 +18,7 @@ class GamesController < ApplicationController
     def create
         @game = Game.new(params.require(:game).permit(:firstname))
         @game.state = '{}'
+        @game.status = 'New'
         # render plain: @game.inspect
         if @game.save
             redirect_to @game

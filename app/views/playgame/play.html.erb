@@ -4,22 +4,55 @@
 
 <h4>Players: </h4>
 
-<% @game.players.each do |p| %>
-<div class="player">
-    <h4><%= p.name %>
+<div class="players row">
+    <% @game.players.each do |p| %>
+    <% if p.type == 1 %>
+    <div class="player type-computer col-6">
+        <h4><%= p.name %>
 
-    <div class="hand">
-        <% p.hand.each do |card| %>
-        <div class="gamecard" data-suit="<%=card.suit%>" data-number="<%=card.number%>">
-            <%= image_tag(card.generate_image_name, class: 'card_img') %>
+        <div class="hand">
+            <% p.hand.each do |card| %>
+            <div class="gamecard" data-suit="<%=card.suit%>" data-number="<%=card.number%>">
+                <%= image_tag(card.generate_image_name(p.type), class: 'card_img') %>
+            </div>
+            <% end %>
         </div>
-        <% end %>
     </div>
+    <% end %>
+    <% end %>
+</div>
+
+<% if @game.state.stock.size > 0 %>
+<div class="stock">
+    <% @game.state.stock.each do |card| %>
+    <div class="stockcard" data-suit="<%=card.suit%>" data-number="<%=card.number%>">
+        <%= image_tag(card.generate_image_name(Player.HUMAN), class: 'card_img') %>
+    </div>
+    <% end %>
 </div>
 <% end %>
 
+<div class="players row">
+    <% @game.players.each do |p| %>
+    <% if p.type == 2 %>
+    <div class="player type-human col-12">
+        <h4><%= p.name %>
+
+        <div class="hand">
+            <% p.hand.each do |card| %>
+            <div class="gamecard" data-suit="<%=card.suit%>" data-number="<%=card.number%>">
+                <%= image_tag(card.generate_image_name(p.type), class: 'card_img') %>
+            </div>
+            <% end %>
+        </div>
+    </div>
+    <% end %>
+    <% end %>
+</div>
+
+
 <script>
-    document.querySelectorAll('.gamecard').forEach(
+    document.querySelectorAll('.type-human .gamecard').forEach(
         (el, i) => { 
             el.addEventListener('mouseover', () => { el.classList.add('top'); });
             el.addEventListener('mouseout', () => { el.classList.remove('top'); }); 

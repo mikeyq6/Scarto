@@ -23,4 +23,33 @@
             }
         }
     }
+    &.type-computer {
+        .hand {
+            .gamecard {
+                margin-left: -145px;
+
+                &:first-child {
+                    margin-left: 0;
+                }
+            }
+        }
+    }
+}
+
+.stock {
+    justify-content: center;
+    display: flex;
+    column-gap: 20px;
+
+    .stockcard {
+        display: inline-flex;
+        position: relative;
+        z-index: 1;
+        border: 1px solid black;
+
+        img.card_img {
+            width: 150px;
+        }
+
+    }
 }

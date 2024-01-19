@@ -96,4 +96,15 @@ class TestCard < ActiveSupport::TestCase
         assert_equal(1, c1.get_value)
 
     end
+
+    test "from_openstruct__returns_correct_card_data" do
+        c1 = Card.new(Card.suits[0], "King")
+
+        cardJson = c1.to_json
+        c2 = Card.from_openstruct(JSON.parse(cardJson, object_class: OpenStruct))
+
+        assert_equal(c1.number, c2.number)
+        assert_equal(c1.suit, c2.suit)
+        assert_equal(c1.name, c2.name)
+    end
 end
