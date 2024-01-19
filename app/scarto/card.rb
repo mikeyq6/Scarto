@@ -51,6 +51,14 @@ class Card
     end
   end
 
+  def is_greater_than_with_suit(card)
+    if @suit == card.suit
+      return is_greater_than(card)
+    else
+      return @@suits.find_index(@suit) > @@suits.find_index(card.suit)
+    end
+  end
+
   def get_value
     if @suit == @@suits[4]
       if @number == 0

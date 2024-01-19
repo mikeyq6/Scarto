@@ -28,4 +28,28 @@ class Player
     false
   end
 
+  def sort_hand
+    len = @hand.size
+    index = 0
+
+    @hand.each do |card|
+      swapped = false
+
+      (0..(len-index-2)).each do |j|
+        if @hand[j].is_greater_than_with_suit(@hand[j+1])
+          tc = @hand[j]
+          @hand[j] = @hand[j+1]
+          @hand[j+1] = tc
+          swapped = true
+        end
+      end
+
+      if !swapped
+        break
+      end
+
+      index = index + 1
+    end
+  end
+
 end
