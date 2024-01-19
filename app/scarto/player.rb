@@ -20,6 +20,29 @@ class Player
     @score = 0
   end
 
+  def self.from_openstruct(data)
+    playerType = data.type
+    playerName = data.name
+    player = Player.new(playerType, playerName)
+    player.score = data.score
+
+    data.hand.each do |cardData|
+      player.hand.push(Card.from_openstruct(cardData))
+    end
+
+    data.tricks.each do |trickData|
+      trick = []
+
+      trickData.each do |cardData|
+        trick.push(Card.from_openstruct(cardData))
+      end
+
+      player.tricks.push(trick)
+    end
+    
+    return player
+  end
+
   def has_matto_trick
     if tricks.find { |t| t[0].suit == Card.suits[4] && t[0].number == 0 }
         return true

@@ -15,6 +15,10 @@ class Card
     @@tarocchi
   end
 
+  def self.from_openstruct(data)
+    Card.new(data.suit, data.number)
+  end
+
   def initialize(suit, number)
     @suit = suit
     @number = number

@@ -54,4 +54,33 @@ class TestPlayer < ActiveSupport::TestCase
 
         assert_equal([], @p.hand)
     end
+
+    test "from_openstruct__returns_correct_player_data" do
+        c1 = Card.new(Card.suits[3], "Knave")
+        c2 = Card.new(Card.suits[0], 10)
+        c3 = Card.new(Card.suits[0], 3)
+        c4 = Card.new(Card.suits[2], "Queen")
+        c5 = Card.new(Card.suits[0], "King")
+        c6 = Card.new(Card.suits[4], 15)
+        c7 = Card.new(Card.suits[4], 9)
+        c8 = Card.new(Card.suits[3], 2)
+        c9 = Card.new(Card.suits[3], 7)
+        c10 = Card.new(Card.suits[4], 20)
+        c11 = Card.new(Card.suits[1], "Knave")
+        c12 = Card.new(Card.suits[1], "Knight")
+        c13 = Card.new(Card.suits[1], 1)
+
+        @p.hand = [ c1, c2, c3, c4 ]
+        @p.tricks = [ [ c5, c6, c7 ], [ c8, c9, c10 ], [ c11, c12, c13] ]
+        @p.score = 22
+
+        playerJson = @p.to_json
+        p2 = Player.from_openstruct(JSON.parse(playerJson, object_class: OpenStruct))
+
+        assert_equal(@p.name, p2.name)
+        assert_equal(@p.type, p2.type)
+        assert_equal(@p.score, p2.score)
+        assert_equal(@p.tricks.size, p2.tricks.size)
+        assert_equal(@p.hand.size, p2.hand.size)
+    end
 end

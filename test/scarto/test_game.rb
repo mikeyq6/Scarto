@@ -459,4 +459,38 @@ class TestGame < ActiveSupport::TestCase
         @g.process_game_winner
         assert_equal(@g.players[1], @g.state.winning_player)
     end
+
+    test "from_openstruct__returns_correct_game_data" do
+        @g.add_player("Susan")
+        @g.state.status = "Some status"
+        
+        gameJson = @g.to_json
+        g2 = Cardgame.from_openstruct(JSON.parse(gameJson, object_class: OpenStruct))
+
+        assert_equal(@g.deck.size, g2.deck.size)
+        assert_equal(@g.players.size, g2.players.size)
+        assert_equal(@g.state.status, g2.state.status)
+
+    end
+
+    test "State.from_openstruct__returns_correct_state_data" do
+
+        c1 = Card.new(Card.suits[0], 1)
+        c2 = Card.new(Card.suits[0], 2)
+        c3 = Card.new(Card.suits[1], 1)
+
+        @s = State.new
+        @s.status = "Some status"
+        @s.trick_length = 7
+        @s.current_trick = [ c2, c3 ]
+        @s.stock = [ c1, c2, c3 ]
+
+        stateJson = @s.to_json
+        s2 = State.from_openstruct(JSON.parse(stateJson, object_class: OpenStruct))
+
+        assert_equal(@s.status, s2.status)
+        assert_equal(@s.trick_length, s2.trick_length)
+        assert_equal(@s.current_trick.size, s2.current_trick.size)
+        assert_equal(@s.stock.size, s2.stock.size)
+    end
 end

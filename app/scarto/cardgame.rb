@@ -4,9 +4,27 @@ require_relative "player"
 require_relative "card"
 
 class Cardgame
-  attr_accessor :players, :deck
-  attr_reader :id, :state
+  attr_accessor :players, :deck, :state
+  attr_reader :id
   @rnd
+
+  def self.from_openstruct(data)
+    cardgame = Cardgame.new
+    cardgame.players = []
+    cardgame.deck = []
+
+    data.players.each do |playerData|
+      cardgame.players.push(Player.from_openstruct(playerData))
+    end
+    data.deck.each do |cardData|
+      cardgame.deck.push(Card.from_openstruct(cardData))
+    end
+    cardgame.state = State.from_openstruct(data.state)
+
+    # byebug
+
+    return cardgame
+  end
 
   def initialize
     @state = State.new
@@ -254,6 +272,6 @@ class Cardgame
   def to_json(options={})
      options[:except] ||= [:rnd]
      super(options)
-   end
+  end
 
 end
