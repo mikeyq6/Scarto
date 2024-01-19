@@ -31,6 +31,14 @@ class Card
     end
   end
 
+  def generate_image_name
+    if suit == 'Trumps'
+      @name = "#{suit}_#{number}.png"
+    else
+      @name = "card back black.png"
+    end
+  end
+
   def is_greater_than(card)
     if card.number.instance_of?(String) && @number.instance_of?(Integer)
       false

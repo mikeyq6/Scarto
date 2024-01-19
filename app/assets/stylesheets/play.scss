@@ -6,6 +6,8 @@
             display: inline-block;
             position: relative;
             margin-left: -120px;
+            z-index: 1;
+            border: 1px solid black;
 
             &:first-child {
                 margin-left: 0;
@@ -13,6 +15,11 @@
 
             img.card_img {
                 width: 150px;
+            }
+
+            &.top {
+                border: 1px solid red;
+                z-index: 4000;
             }
         }
     }

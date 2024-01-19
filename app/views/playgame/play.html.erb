@@ -10,10 +10,19 @@
 
     <div class="hand">
         <% p.hand.each do |card| %>
-        <div class="gamecard">
-            <%= image_tag("card back black.png", class: 'card_img') %>
+        <div class="gamecard" data-suit="<%=card.suit%>" data-number="<%=card.number%>">
+            <%= image_tag(card.generate_image_name, class: 'card_img') %>
         </div>
         <% end %>
     </div>
 </div>
 <% end %>
+
+<script>
+    document.querySelectorAll('.gamecard').forEach(
+        (el, i) => { 
+            el.addEventListener('mouseover', () => { el.classList.add('top'); });
+            el.addEventListener('mouseout', () => { el.classList.remove('top'); }); 
+        });
+
+</script>

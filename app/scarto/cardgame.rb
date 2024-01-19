@@ -76,6 +76,10 @@ class Cardgame
     end
     @deck = []
     @state.status = "Awaiting dealer swap"
+
+    @players.each do |player|
+      player.sort_hand
+    end
   end
 
   def start_game
