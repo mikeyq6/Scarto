@@ -107,4 +107,20 @@ class TestCard < ActiveSupport::TestCase
         assert_equal(c1.suit, c2.suit)
         assert_equal(c1.name, c2.name)
     end
+
+    test "convert_to_number_if_possible - works for numbers" do
+        c1 = Card.new(Card.suits[0], "King")
+        c2 = Card.new(Card.suits[2], "3")
+        c3 = Card.new(Card.suits[4], "13")
+        c4 = Card.new(Card.suits[2], 4)
+        c5 = Card.new(Card.suits[1], "10")
+        c6 = Card.new(Card.suits[1], "Knave")
+
+        assert_equal("King", c1.number)
+        assert_equal(3, c2.number)
+        assert_equal(13, c3.number)
+        assert_equal(4, c4.number)
+        assert_equal(10, c5.number)
+        assert_equal("Knave", c6.number)
+    end
 end

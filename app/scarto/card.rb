@@ -22,6 +22,7 @@ class Card
   def initialize(suit, number)
     @suit = suit
     @number = number
+    convert_number_to_integer_if_possible
     generate_name
   end
 
@@ -98,6 +99,19 @@ class Card
       "nil"
     else
       @name
+    end
+  end
+
+  def convert_number_to_integer_if_possible()
+    if(@number.is_a?(String))
+      nums = '0123456789'.split('')
+
+      @number.split('').each do |c|
+        if !nums.include?(c)
+          return
+        end
+      end
+      @number = @number.to_i
     end
   end
 end
