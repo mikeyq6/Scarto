@@ -35,6 +35,7 @@ class Cardgame
     create_deck
     shuffle_deck
     add_computer_players
+    set_dealer
 
     @state.status = 'Initialized'
   end
@@ -48,10 +49,19 @@ class Cardgame
     )
   end
 
+  def set_dealer
+    # byebug
+    dealerIndex = @rnd.rand(@players.size)
+    @state.dealer = @players[dealerIndex]
+    @state.first_player = @players[(dealerIndex + 1) % @players.size]
+    @state.current_player = @state.first_player
+  end
+
   def add_player(name)
     @players.push(
       Player.new(Player.HUMAN, name)
     )
+    set_dealer
   end
 
   def create_deck
@@ -102,9 +112,7 @@ class Cardgame
 
   def start_game
     @state.status = "Active"
-    @state.current_player = @players[@rnd.rand(3)]
-    @state.first_player = @state.current_player
-    @state.current_player.tricks.push(@state.stock)
+    @state.dealer.tricks.push(@state.stock)
     @state.stock = []
   end
 
@@ -230,8 +238,12 @@ class Cardgame
     elsif !@state.stock.find { |c| c.suit == stock_card.suit && c.number == stock_card.number }
       raise GameException.new "Attempt to swap card with card not in stock"
     else
+      if card.get_value == 5 || card.isMatto
+        if !card.isBagato || hand.find { |c| c.suit == Card.suits[4] && c.number != 1}
+          raise GameException.new "Cannot swap out Kings, The Matto or the The Bagato cards"
+        end
+      end
       card_index = hand.find_index(hand.find { |c| c.suit == card.suit && c.number == card.number})
-      # puts "card_index: #{card_index}"
       stock_card_index = @state.stock.find_index(@state.stock.find { |c| c.suit == stock_card.suit && c.number == stock_card.number})
       temp = hand[card_index]
       hand[card_index] = stock_card
@@ -240,7 +252,7 @@ class Cardgame
   end
 
   def check_card_is_valid(hand, card, trick)
-    if card.suit == Card.suits[4] && card.number == 0
+    if card.isMatto
       true
     elsif trick.length > 0
       if card.suit == trick[0].suit

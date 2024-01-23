@@ -94,6 +94,14 @@ class Card
     end
   end
 
+  def isBagato
+    return @suit == @@suits[4] && @number == 1
+  end
+
+  def isMatto
+    return @suit == @@suits[4] && @number == 0
+  end
+
   def to_s
     if @name == nil
       "nil"

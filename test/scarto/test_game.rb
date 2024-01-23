@@ -72,19 +72,71 @@ class TestGame < ActiveSupport::TestCase
         assert_equal(3, @g.state.stock.length)
     end
 
-    test "start game -- status updated and starting player is selected" do
+    test "swap card with stock card - cannot discard 5-point cards or matto" do
+        @g.add_player("Susan")
+        @g.deal_deck
+        king_card = Card.new(Card.suits[2], "King");
+        bagato = Card.new(Card.suits[4], 1)
+        langelo = Card.new(Card.suits[4], 20)
+        matto = Card.new(Card.suits[4], 0)
+
+        @g.players[2].hand[7] = king_card
+        @g.players[2].hand[8] = bagato
+        @g.players[2].hand[9] = langelo
+        @g.players[2].hand[10] = matto
+        stock_card = @g.state.stock[1]
+
+        assert_raises(GameException) do
+            @g.swap_card_with_stock_card(@g.players[2].hand, king_card, stock_card)
+        end
+        assert_raises(GameException) do
+            @g.swap_card_with_stock_card(@g.players[2].hand, bagato, stock_card)
+        end
+        assert_raises(GameException) do
+            @g.swap_card_with_stock_card(@g.players[2].hand, langelo, stock_card)
+        end
+        assert_raises(GameException) do
+            @g.swap_card_with_stock_card(@g.players[2].hand, matto, stock_card)
+        end
+        assert(stock_card.in? @g.state.stock)
+        assert(king_card.in? @g.players[2].hand)
+        assert(bagato.in? @g.players[2].hand)
+        assert(langelo.in? @g.players[2].hand)
+        assert(matto.in? @g.players[2].hand)
+        assert_equal(25, @g.players[2].hand.length)
+        assert_equal(3, @g.state.stock.length)
+    end
+
+    test "swap card with stock card - can discard bagato if has no other trumps" do
+        @g.add_player("Susan")
+        @g.deal_deck
+        bagato = Card.new(Card.suits[4], 1)
+
+        @g.players[2].hand = [ bagato, Card.new(Card.suits[0], 1), Card.new(Card.suits[1], 10), Card.new(Card.suits[3], "Queen") ]
+        stock_card = @g.state.stock[1]
+
+        @g.swap_card_with_stock_card(@g.players[2].hand, bagato, stock_card)
+ 
+        assert(stock_card.in? @g.players[2].hand)
+        assert(bagato.in? @g.state.stock)
+    end
+
+    test "start game -- status updated and stock is emptied and given as a trick to the dealer player" do
         @g.add_player("Susan")
         @g.deal_deck
 
-        assert_nil(@g.state.current_player, "No current player should be selected")
+        assert_not_nil(@g.state.dealer, "Dealer should be selected")
+        assert_not_nil(@g.state.current_player, "Current player should be selected")
+        assert_not_nil(@g.state.first_player, "First player should be selected")
+        assert_equal(3, @g.state.stock.length)
+        assert_equal(0, @g.state.dealer.tricks.length)
         assert_not_equal("Active", @g.state.status, "Status should not be Active")
 
         @g.start_game
 
-        assert_not_nil(@g.state.current_player, "Current player should be selected")
         assert_equal("Active", @g.state.status)
         assert_equal(0, @g.state.stock.length)
-        assert_equal(1, @g.state.current_player.tricks.length)
+        assert_equal(1, @g.state.dealer.tricks.length)
     end
 
     test "play card - card doesnt exist in players hand - raises exception" do

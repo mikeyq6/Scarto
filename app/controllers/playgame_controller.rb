@@ -15,25 +15,28 @@ class PlaygameController < ApplicationController
     else
         @game = Cardgame.from_openstruct(JSON.parse(@gameObj.state, object_class: OpenStruct))
     end
+
+
     
     @gameObj.state = @game.to_json
     @gameObj.save
     # byebug
+
+    if @game.state.dealer.type == Player.HUMAN && @game.state.status == 'Awaiting dealer swap'
+        render "swap"
+    end
 
     # @game = 
 
   end
 
   def swap
-    @gameObj = Game.find(params[:id])
-    # params.require(:game).permit(:firstname)
-    @game = Cardgame.from_openstruct(JSON.parse(@gameObj.state, object_class: OpenStruct))
+    get_game
 
     sourceCard = Card.new(params[:scSuit], params[:scNumber])
     stockCard = Card.new(params[:tcSuit], params[:tcNumber])
 
     result = SwapResult.new
-    # puts("sourceCard: #{sourceCard.to_json}")
 
     begin
         hand = @game.find_hand_with_card(sourceCard)
@@ -42,8 +45,7 @@ class PlaygameController < ApplicationController
         @game.swap_card_with_stock_card(hand, sourceCard, stockCard)
         player.sort_hand
 
-        @gameObj.state = @game.to_json
-        @gameObj.save
+        save_game
 
         result.status = 'ok'
     rescue GameException => e
@@ -56,6 +58,21 @@ class PlaygameController < ApplicationController
     return result
   end
 
+  def swap_done
+    get_game
+    @game.start_game
+    save_game
+  end
+
+  def get_game
+    @gameObj = Game.find(params[:id])
+    @game = Cardgame.from_openstruct(JSON.parse(@gameObj.state, object_class: OpenStruct))
+  end
+
+  def save_game
+    @gameObj.state = @game.to_json
+    @gameObj.save
+  end
     
 end
 

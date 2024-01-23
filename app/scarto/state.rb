@@ -1,5 +1,5 @@
 class State
-  attr_accessor :status, :current_player, :first_player, :current_trick, :stock, :trick_length, :winning_player
+  attr_accessor :status, :dealer, :current_player, :first_player, :current_trick, :stock, :trick_length, :winning_player
 
   def self.from_openstruct(data)
     s = State.new
@@ -12,6 +12,15 @@ class State
     data.stock.each do |cardData|
       s.stock.push(Card.from_openstruct(cardData))
     end
+    if data.dealer
+      s.dealer = Player.from_openstruct(data.dealer)
+    end
+    if data.current_player
+      s.current_player = Player.from_openstruct(data.current_player)
+    end
+    if data.first_player
+      s.first_player = Player.from_openstruct(data.first_player)
+    end
 
     return s
   end
@@ -21,5 +30,8 @@ class State
     @stock = []
     @current_trick = []
     @trick_length = 3
+    @current_player = nil
+    @first_player = nil
+    @dealer = nil
   end
 end

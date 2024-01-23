@@ -11,6 +11,7 @@ Rails.application.routes.draw do
 
   get "/play/:id", to: "playgame#play"
   post "/play/:id/swap", to: "playgame#swap"
+  get "/play/:id/swap_done", to: "playgame#swap_done"
 
   resources :games
 end
