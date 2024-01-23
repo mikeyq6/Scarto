@@ -230,8 +230,9 @@ class Cardgame
     elsif !@state.stock.find { |c| c.suit == stock_card.suit && c.number == stock_card.number }
       raise GameException.new "Attempt to swap card with card not in stock"
     else
-      card_index = hand.find_index(card)
-      stock_card_index = @state.stock.find_index(stock_card)
+      card_index = hand.find_index(hand.find { |c| c.suit == card.suit && c.number == card.number})
+      # puts "card_index: #{card_index}"
+      stock_card_index = @state.stock.find_index(@state.stock.find { |c| c.suit == stock_card.suit && c.number == stock_card.number})
       temp = hand[card_index]
       hand[card_index] = stock_card
       @state.stock[stock_card_index] = card

@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   # delete "/game/:id", to: "game#destroy"
 
   get "/play/:id", to: "playgame#play"
+  post "/play/:id/swap", to: "playgame#swap"
 
   resources :games
 end
