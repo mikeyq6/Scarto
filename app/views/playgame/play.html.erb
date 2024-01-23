@@ -12,7 +12,7 @@
 
         <div class="hand">
             <% p.hand.each do |card| %>
-            <div class="gamecard" data-suit="<%=card.suit%>" data-number="<%=card.number%>">
+            <div class="gamecard">
                 <%= image_tag(card.generate_image_name(p.type), class: 'card_img') %>
             </div>
             <% end %>
@@ -25,8 +25,10 @@
 <% if @game.state.stock.size > 0 %>
 <div class="stock">
     <% @game.state.stock.each do |card| %>
-    <div class="stockcard" data-suit="<%=card.suit%>" data-number="<%=card.number%>">
-        <%= image_tag(card.generate_image_name(Player.HUMAN), class: 'card_img') %>
+    <div class="stockcard">
+        <%= image_tag(card.generate_image_name(Player.HUMAN), id: "#{card.suit}_#{card.number}", class: 'card_img',
+                'data-suit':card.suit, 'data-number':card.number, 
+                draggable: 'true', ondragstart: 'dragStart(event)', ondrop:'dragEnd(event)', ondragover:'allowDrop(event)') %>
     </div>
     <% end %>
 </div>
@@ -40,8 +42,10 @@
 
         <div class="hand">
             <% p.hand.each do |card| %>
-            <div class="gamecard" data-suit="<%=card.suit%>" data-number="<%=card.number%>">
-                <%= image_tag(card.generate_image_name(p.type), class: 'card_img') %>
+            <div class="gamecard">
+                <%= image_tag(card.generate_image_name(p.type), id: "#{card.suit}_#{card.number}", class: 'card_img', 
+                    'data-suit': card.suit, 'data-number': card.number, 
+                    draggable: 'true', ondragstart: 'dragStart(event)', ondrop:'dragEnd(event)', ondragover:'allowDrop(event)') %>
             </div>
             <% end %>
         </div>
@@ -57,5 +61,47 @@
             el.addEventListener('mouseover', () => { el.classList.add('top'); });
             el.addEventListener('mouseout', () => { el.classList.remove('top'); }); 
         });
+
+    const allowDrop = (ev) => {
+        ev.preventDefault();
+    };
+
+    const dragStart = (ev) => {
+        ev.dataTransfer.setData('text/plain', JSON.stringify(getCardData(ev.target)));
+        ev.dataTransfer.effectAllowed = 'copy';
+    };
+
+    const dragEnd = (ev) => {
+        ev.preventDefault();
+
+        const data = JSON.parse(ev.dataTransfer.getData('text/plain'));
+        console.log('data', data)
+
+        const srcEl = document.querySelector('#' + data.id);
+        const targetData = getCardData(ev.target);
+
+        console.log('el', srcEl)
+        console.log('targetData', targetData)
+        setCardData(ev.target, data);
+        setCardData(srcEl, targetData);
+
+        console.log('el after', srcEl)
+    };
+
+    const getCardData = (cardImgEl) => {
+        return {
+            id: cardImgEl.id,
+            suit: cardImgEl.dataset.suit,
+            number: cardImgEl.dataset.number,
+            imgSrc: cardImgEl.src
+        };
+    };
+
+    const setCardData = (cardImgEl, data) => {
+        cardImgEl.id = data.id;
+        cardImgEl.dataset.suit = data.suit;
+        cardImgEl.dataset.number = data.number;
+        cardImgEl.src = data.imgSrc;
+    };
 
 </script>
