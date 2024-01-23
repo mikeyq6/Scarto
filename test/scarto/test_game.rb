@@ -460,7 +460,7 @@ class TestGame < ActiveSupport::TestCase
         assert_equal(@g.players[1], @g.state.winning_player)
     end
 
-    test "from_openstruct__returns_correct_game_data" do
+    test "from_openstruct - returns correct game data" do
         @g.add_player("Susan")
         @g.state.status = "Some status"
         
@@ -473,7 +473,7 @@ class TestGame < ActiveSupport::TestCase
 
     end
 
-    test "State.from_openstruct__returns_correct_state_data" do
+    test "State.from_openstruct - returns correct state data" do
 
         c1 = Card.new(Card.suits[0], 1)
         c2 = Card.new(Card.suits[0], 2)
@@ -492,5 +492,34 @@ class TestGame < ActiveSupport::TestCase
         assert_equal(@s.trick_length, s2.trick_length)
         assert_equal(@s.current_trick.size, s2.current_trick.size)
         assert_equal(@s.stock.size, s2.stock.size)
+    end
+
+    test "find_hand_with_card - returns correct hand" do
+        @g.add_player("Susan")
+        @g.deal_deck
+    
+        card_to_find = @g.players[1].hand[6]
+        assert_equal(@g.players[1].hand, @g.find_hand_with_card(card_to_find))
+
+        card_to_find = @g.players[2].hand[0]
+        assert_equal(@g.players[2].hand, @g.find_hand_with_card(card_to_find))
+
+        card_to_find = @g.players[0].hand[10]
+        assert_equal(@g.players[0].hand, @g.find_hand_with_card(card_to_find))
+    end
+
+    test "find_hand_with_card - when card exists in no hand - throws exception" do
+        @g.add_player("Susan")
+        @g.deal_deck
+
+        playerHand = @g.players[1].hand
+        handLength = playerHand.size
+        card_to_find = playerHand[6]
+        playerHand.delete_at(playerHand.find_index(card_to_find))
+
+        assert_equal(handLength-1, playerHand.size)
+        assert_raises(GameException) do
+            @g.find_hand_with_card(card_to_find)
+        end
     end
 end

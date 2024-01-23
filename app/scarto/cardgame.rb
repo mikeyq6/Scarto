@@ -263,6 +263,15 @@ class Cardgame
     return false
   end
 
+  def find_hand_with_card(card) 
+    @players.each do |player|
+      if player.hand.find { |c| c.suit == card.suit && c.number == card.number }
+        return player.hand
+      end
+    end
+    raise GameException.new "Card not found in any player hand"
+  end
+
   def display_deck
     @deck.each do |card|
       puts "#{card}"
