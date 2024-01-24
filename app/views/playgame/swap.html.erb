@@ -57,43 +57,47 @@
     const dragEnd = (ev) => {
         ev.preventDefault();
 
-        const data = JSON.parse(ev.dataTransfer.getData('text/plain'));
-        console.log('data', data)
+        const elData = JSON.parse(ev.dataTransfer.getData('text/plain'));
 
-        // TODO: Make sure the source and target correspond to the hand and the stock respectively
+        let srcEl = {}
+        let srcData = {}
+        let targetEl = {}
+        let targetData = {}
 
-        const srcEl = document.querySelector('#' + data.id);
-        const targetData = getCardData(ev.target);
+        // Make sure the source and target always correspond to the hand and the stock respectively
+        if(ev.target.closest('.stock')) {
+            srcEl = document.querySelector('#' + elData.id);
+            srcData = elData
+            targetEl = ev.target
+            targetData = getCardData(ev.target);
+        } else {
+            srcEl = ev.target
+            srcData = getCardData(ev.target);
+            targetEl = document.querySelector('#' + elData.id);
+            targetData = elData
+        }
 
-        console.log('el', srcEl)
-        console.log('targetData', targetData)
-
-        checkCardIsSwappable(data, targetData)
+        swapCard(srcData, targetData)
             .then((responseData) => {
                 result = JSON.parse(responseData);
 
                 if(result.status === 'ok') {
                     console.log('ok, now do swap')
-                    setCardData(ev.target, data);
+                    setCardData(targetEl, srcData);
                     setCardData(srcEl, targetData);
                 } else {
                     createToast(result.errorMessage);
-
-                    // toastr.success('Welcome to rails!!')
                 }
                 console.log('result', result);
             })
             .catch((result) => {
                 console.log('result', result)
                 console.log('failed')
+                    createToast(result);
             });
-
-        console.log('el after', srcEl)
     };
 
     const updateStatus = (ev) => {
-        // ev.preventDefault();
-        
         setSwapDone()
             .then((responseData) => {
                 return true;
@@ -119,7 +123,7 @@
         cardImgEl.src = data.imgSrc;
     };
 
-    const checkCardIsSwappable = (sourceCardData, targetCardData) => {
+    const swapCard = (sourceCardData, targetCardData) => {
         const xhr = new XMLHttpRequest();
         const url = '/play/<%=@gameObj.id%>/swap';
         const params = 'scSuit=' + sourceCardData.suit + '&scNumber=' + sourceCardData.number + '&tcSuit=' + targetCardData.suit + '&tcNumber=' + targetCardData.number
