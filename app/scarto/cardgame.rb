@@ -50,10 +50,12 @@ class Cardgame
 
   def set_dealer
     # byebug
-    dealerIndex = @rnd.rand(@players.size)
-    @state.dealer = @players[dealerIndex]
-    @state.first_player = @players[(dealerIndex + 1) % @players.size]
-    @state.current_player = @state.first_player
+    if @players.size == 3
+      dealerIndex = @rnd.rand(@players.size)
+      @state.dealer = @players[dealerIndex]
+      @state.first_player = @players[(dealerIndex + 1) % @players.size]
+      @state.current_player = @state.first_player
+    end
   end
 
   def add_player(player)
@@ -107,6 +109,10 @@ class Cardgame
 
     @players.each do |player|
       player.sort_hand
+    end
+
+    if @state.dealer.type == Player.COMPUTER
+      @state.status = "Active"
     end
   end
 

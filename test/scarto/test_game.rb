@@ -574,4 +574,12 @@ class TestGame < ActiveSupport::TestCase
             @g.find_hand_with_card(card_to_find)
         end
     end
+
+    test "when game has a computer dealer - sets status of game to 'Active'" do
+        @g.add_player(Player.new(Player.COMPUTER, "Susan"))
+        @g.deal_deck
+
+        assert_equal(3, @g.players.size)
+        assert_equal("Active", @g.state.status)
+    end
 end
