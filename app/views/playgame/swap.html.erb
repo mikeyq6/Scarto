@@ -174,7 +174,7 @@
         </div>
         </div>`;
 
-        document.getElementById('body-container').insertAdjacentHTML("beforebegin", toastHtml);
+        document.getElementById('toast-container').insertAdjacentHTML("afterbegin", toastHtml);
         const toast = new bootstrap.Toast(document.getElementById('toast'));
         toast.show();
     };
