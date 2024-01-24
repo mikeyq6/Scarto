@@ -9,7 +9,7 @@ class PlaygameController < ApplicationController
 
     if @gameObj.status == "New" 
         @game = Cardgame.new
-        @game.add_player(@gameObj.firstname)
+        @game.add_player(Player.new(Player.HUMAN, @gameObj.firstname))
         @game.deal_deck
         @gameObj.status = "Active"
     else

@@ -18,7 +18,7 @@ class TestGame < ActiveSupport::TestCase
     end
 
     test "add_player - adds human player" do
-        @g.add_player("Susan")
+        @g.add_player(Player.new(Player.HUMAN, "Susan"))
 
         assert_equal(3, @g.players.length, "Should be 3 players now")
         assert_equal(Player.HUMAN, @g.players[2].type)
@@ -26,7 +26,7 @@ class TestGame < ActiveSupport::TestCase
     end
 
     test "deal_deck - deals correct number of cards to players and stock" do
-        @g.add_player("Susan")
+        @g.add_player(Player.new(Player.HUMAN, "Susan"))
         @g.deal_deck
 
         assert_equal(25, @g.players[0].hand.length)
@@ -40,7 +40,7 @@ class TestGame < ActiveSupport::TestCase
     end
 
     test "swap card with stock card - attempt to swap card that isnt in stock - throws exception" do
-        @g.add_player("Susan")
+        @g.add_player(Player.new(Player.HUMAN, "Susan"))
         @g.deal_deck
         card_not_in_stock = @g.players[0].hand[0]
 
@@ -50,7 +50,7 @@ class TestGame < ActiveSupport::TestCase
     end
 
     test "swap card with stock card - attempt to swap card that isnt in hand - throws exception" do
-        @g.add_player("Susan")
+        @g.add_player(Player.new(Player.HUMAN, "Susan"))
         @g.deal_deck
         card_not_in_hand = @g.players[0].hand[0]
 
@@ -60,7 +60,7 @@ class TestGame < ActiveSupport::TestCase
     end
 
     test "swap card with stock card - card exists in hand and stock - swap is successful" do
-        @g.add_player("Susan")
+        @g.add_player(Player.new(Player.HUMAN, "Susan"))
         @g.deal_deck
         card_to_swap = @g.players[2].hand[7]
         stock_card = @g.state.stock[1]
@@ -73,7 +73,7 @@ class TestGame < ActiveSupport::TestCase
     end
 
     test "swap card with stock card - cannot discard 5-point cards or matto" do
-        @g.add_player("Susan")
+        @g.add_player(Player.new(Player.HUMAN, "Susan"))
         @g.deal_deck
         king_card = Card.new(Card.suits[2], "King");
         bagato = Card.new(Card.suits[4], 1)
@@ -108,7 +108,7 @@ class TestGame < ActiveSupport::TestCase
     end
 
     test "swap card with stock card - can discard bagato if has no other trumps" do
-        @g.add_player("Susan")
+        @g.add_player(Player.new(Player.HUMAN, "Susan"))
         @g.deal_deck
         bagato = Card.new(Card.suits[4], 1)
 
@@ -121,8 +121,8 @@ class TestGame < ActiveSupport::TestCase
         assert(bagato.in? @g.state.stock)
     end
 
-    test "start game -- status updated and stock is emptied and given as a trick to the dealer player" do
-        @g.add_player("Susan")
+    test "start game - status updated and stock is emptied and given as a trick to the dealer player" do
+        @g.add_player(Player.new(Player.HUMAN, "Susan"))
         @g.deal_deck
 
         assert_not_nil(@g.state.dealer, "Dealer should be selected")
@@ -140,7 +140,7 @@ class TestGame < ActiveSupport::TestCase
     end
 
     test "play card - card doesnt exist in players hand - raises exception" do
-        @g.add_player("Susan")
+        @g.add_player(Player.new(Player.HUMAN, "Susan"))
         @g.deal_deck
         @g.start_game
 
@@ -154,7 +154,7 @@ class TestGame < ActiveSupport::TestCase
     end
 
     test "play card - play invalid card - raises exception" do
-        @g.add_player("Susan")
+        @g.add_player(Player.new(Player.HUMAN, "Susan"))
         @g.deal_deck
         @g.start_game
 
@@ -172,7 +172,7 @@ class TestGame < ActiveSupport::TestCase
     end
 
     test "play card - card is played successfully - advances player" do
-        @g.add_player("Susan")
+        @g.add_player(Player.new(Player.HUMAN, "Susan"))
         @g.deal_deck
         @g.start_game
         @g.state.first_player = @g.players[1]
@@ -195,7 +195,7 @@ class TestGame < ActiveSupport::TestCase
     end
 
     test "play card - matto is played - player gets trick" do
-        @g.add_player("Susan")
+        @g.add_player(Player.new(Player.HUMAN, "Susan"))
         @g.deal_deck
         @g.start_game
         @g.state.first_player = @g.players[1]
@@ -211,7 +211,7 @@ class TestGame < ActiveSupport::TestCase
     end
 
     test "play card - last card of hand played - triggers end of hand" do
-        @g.add_player("Susan")
+        @g.add_player(Player.new(Player.HUMAN, "Susan"))
         @g.deal_deck
         @g.start_game
 
@@ -235,7 +235,7 @@ class TestGame < ActiveSupport::TestCase
     end
 
     test "process end of hand - correct player wins trick" do
-        @g.add_player("Susan")
+        @g.add_player(Player.new(Player.HUMAN, "Susan"))
         @g.deal_deck
         @g.start_game
 
@@ -260,7 +260,7 @@ class TestGame < ActiveSupport::TestCase
     end
 
     test "process end of hand - correct player wins trick when matto played first" do
-        @g.add_player("Susan")
+        @g.add_player(Player.new(Player.HUMAN, "Susan"))
         @g.deal_deck
         @g.start_game
 
@@ -289,7 +289,7 @@ class TestGame < ActiveSupport::TestCase
     end
 
     test "process end of hand - correct player wins trick when matto played last" do
-        @g.add_player("Susan")
+        @g.add_player(Player.new(Player.HUMAN, "Susan"))
         @g.deal_deck
         @g.start_game
 
@@ -460,7 +460,7 @@ class TestGame < ActiveSupport::TestCase
     end
 
     test "process game winner - correct player wins - no other tricks" do
-        @g.add_player("Susan")
+        @g.add_player(Player.new(Player.HUMAN, "Susan"))
 
         c1 = Card.new(Card.suits[0], 1)
         c2 = Card.new(Card.suits[0], 2)
@@ -472,7 +472,7 @@ class TestGame < ActiveSupport::TestCase
     end
 
     test "process game winner - correct player wins - all players have tricks" do
-        @g.add_player("Susan")
+        @g.add_player(Player.new(Player.HUMAN, "Susan"))
 
         c1 = Card.new(Card.suits[0], 1)
         c2 = Card.new(Card.suits[0], 2)
@@ -494,7 +494,7 @@ class TestGame < ActiveSupport::TestCase
     end
 
     test "process game winner - correct player wins - tricks with matto" do
-        @g.add_player("Susan")
+        @g.add_player(Player.new(Player.HUMAN, "Susan"))
 
         c1 = Card.new(Card.suits[0], 1)
         c2 = Card.new(Card.suits[0], 2)
@@ -513,7 +513,7 @@ class TestGame < ActiveSupport::TestCase
     end
 
     test "from_openstruct - returns correct game data" do
-        @g.add_player("Susan")
+        @g.add_player(Player.new(Player.HUMAN, "Susan"))
         @g.state.status = "Some status"
         
         gameJson = @g.to_json
@@ -546,8 +546,8 @@ class TestGame < ActiveSupport::TestCase
         assert_equal(@s.stock.size, s2.stock.size)
     end
 
-    test "find_hand_with_card - returns correct hand" do
-        @g.add_player("Susan")
+    test "find hand with card - returns correct hand" do
+        @g.add_player(Player.new(Player.HUMAN, "Susan"))
         @g.deal_deck
     
         card_to_find = @g.players[1].hand[6]
@@ -560,8 +560,8 @@ class TestGame < ActiveSupport::TestCase
         assert_equal(@g.players[0].hand, @g.find_hand_with_card(card_to_find))
     end
 
-    test "find_hand_with_card - when card exists in no hand - throws exception" do
-        @g.add_player("Susan")
+    test "find hand with card - when card exists in no hand - throws exception" do
+        @g.add_player(Player.new(Player.HUMAN, "Susan"))
         @g.deal_deck
 
         playerHand = @g.players[1].hand

@@ -56,9 +56,10 @@ class Cardgame
     @state.current_player = @state.first_player
   end
 
-  def add_player(name)
+  def add_player(player)
     @players.push(
-      Player.new(Player.HUMAN, name)
+      player
+      # Player.new(Player.HUMAN, name)
     )
     set_dealer
   end
