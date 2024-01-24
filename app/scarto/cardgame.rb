@@ -1,5 +1,4 @@
 require_relative "state"
-require_relative "trick"
 require_relative "player"
 require_relative "card"
 
