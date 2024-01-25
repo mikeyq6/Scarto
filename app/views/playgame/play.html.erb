@@ -8,7 +8,7 @@
     <% @game.players.each do |p| %>
     <% if p.type == 1 %>
     <div class="player type-computer col-6">
-        <h4><%= p.name %>
+        <h4 class="<%= @game.state.first_player.name == p.name ? "first" : "" %>"><%= p.name %></h4>
 
         <div class="hand">
             <% p.hand.each do |card| %>
@@ -28,7 +28,7 @@
     <% @game.players.each do |p| %>
     <% if p.type == 2 %>
     <div class="player type-human col-12">
-        <h4><%= p.name %>
+        <h4 class="<%= @game.state.first_player.name == p.name ? "first" : "" %>"><%= p.name %></h4>
 
         <div class="hand">
             <% p.hand.each do |card| %>
