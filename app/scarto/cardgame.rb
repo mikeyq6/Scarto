@@ -128,7 +128,7 @@ class Cardgame
     elsif !check_card_is_valid(player_hand, card, @state.current_trick)
       raise GameException.new "Attempt to play an invalid card"
     else
-      player_hand.delete_at(player_hand.find_index(card))
+      player_hand.delete_at(get_card_index(player_hand, card))
 
       if card.suit == Card.suits[4] && card.number == 0
         @state.trick_length = 2
@@ -151,7 +151,7 @@ class Cardgame
   end
 
   def advance_player
-    cp_index = @players.find_index(@state.current_player)
+    cp_index = get_player_index(@state.current_player)
     cp_index = (cp_index + 1) % 3
     @state.current_player = @players[cp_index]
   end
@@ -201,8 +201,8 @@ class Cardgame
       end
     end
 
-    highest_card_index = trick.find_index(highest_card)
-    winning_player_index = (@players.find_index(@state.first_player) + highest_card_index) % 3
+    highest_card_index = get_card_index(trick, highest_card) #trick.find_index(highest_card)
+    winning_player_index = (get_player_index(@state.first_player) + highest_card_index) % 3
 
     if @players[winning_player_index].has_matto_trick
       winning_player_index = (winning_player_index + 1) % 3
@@ -247,8 +247,8 @@ class Cardgame
           raise GameException.new "Cannot swap out Kings, The Matto or the The Bagato cards"
         end
       end
-      card_index = hand.find_index(hand.find { |c| c.suit == card.suit && c.number == card.number})
-      stock_card_index = @state.stock.find_index(@state.stock.find { |c| c.suit == stock_card.suit && c.number == stock_card.number})
+      card_index = get_card_index(hand, card) #hand.find_index(hand.find { |c| c.suit == card.suit && c.number == card.number})
+      stock_card_index = get_card_index(@state.stock, stock_card) # @state.stock.find_index(@state.stock.find { |c| c.suit == stock_card.suit && c.number == stock_card.number})
       temp = hand[card_index]
       hand[card_index] = stock_card
       @state.stock[stock_card_index] = card
@@ -298,6 +298,17 @@ class Cardgame
   def to_json(options={})
      options[:except] ||= [:rnd]
      super(options)
+  end
+
+  private 
+  def get_player_index(player)
+    # byebug
+    return @players.find_index(@players.find { |p| p.name == player.name })
+  end
+
+  private 
+  def get_card_index(hand, card)
+    return hand.find_index(hand.find { |c| c.suit == card.suit  && c.number == card.number})
   end
 
 end
