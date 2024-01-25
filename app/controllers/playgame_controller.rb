@@ -17,17 +17,20 @@ class PlaygameController < ApplicationController
     end
 
 
+    while @game.state.current_player.type == Player.COMPUTER do
+      ai_player_play
+    end
     
     @gameObj.state = @game.to_json
     @gameObj.save
-    # byebug
 
     if @game.state.dealer.type == Player.HUMAN && @game.state.status == 'Awaiting dealer swap'
         render "swap"
     end
 
-    # @game = 
 
+    # byebug
+    
   end
 
   def swap
@@ -74,6 +77,22 @@ class PlaygameController < ApplicationController
     @gameObj.save
   end
     
+  private
+  def ai_player_play
+    # Initially just play the first playable card he has
+    cardToPlay = nil
+    index = 0
+    player = @game.state.current_player
+
+    byebug
+    while !cardToPlay do
+      if @game.check_card_is_valid(player.hand, player.hand[index], @game.state.current_trick)
+        cardToPlay = player.hand[index]
+        @game.play_card(cardToPlay)
+      end
+      index = index + 1
+    end
+  end
 end
 
 class SwapResult
