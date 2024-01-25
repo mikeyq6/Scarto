@@ -1,14 +1,13 @@
 class GamesController < ApplicationController
+    before_action :set_game, only: [:show, :destroy, :edit, :update]
+
 
     def index
         @games = Game.all
     end
 
     def show
-        # byebug
-        @game = Game.find(params[:id])
-    # code to grab the proper Post so it can be
-    # displayed in the Show view (show.html.erb)
+    
     end
 
     def new
@@ -28,11 +27,11 @@ class GamesController < ApplicationController
     end
 
     def edit
-        @game = Game.find(params[:id])
+
     end
 
     def update
-        @game = Game.find(params[:id])
+
         if @game.update(params.require(:game).permit(:firstname))
             redirect_to @game
         else
@@ -41,9 +40,13 @@ class GamesController < ApplicationController
     end
 
     def destroy
-        @game = Game.find(params[:id])
         if @game.delete
             redirect_to games_path
         end 
+    end
+
+    private
+    def set_game
+        @game = Game.find(params[:id])
     end
 end
