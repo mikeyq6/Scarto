@@ -26,7 +26,9 @@ class TestGame < ActiveSupport::TestCase
     end
 
     test "deal_deck - deals correct number of cards to players and stock" do
-        @g.add_player(Player.new(Player.HUMAN, "Susan"))
+        human = Player.new(Player.HUMAN, "Susan")
+        @g.add_player(human)
+        @g.state.dealer = human
         @g.deal_deck
 
         assert_equal(25, @g.players[0].hand.length)
@@ -40,7 +42,9 @@ class TestGame < ActiveSupport::TestCase
     end
 
     test "swap card with stock card - attempt to swap card that isnt in stock - throws exception" do
-        @g.add_player(Player.new(Player.HUMAN, "Susan"))
+        human = Player.new(Player.HUMAN, "Susan")
+        @g.add_player(human)
+        @g.state.dealer = human
         @g.deal_deck
         card_not_in_stock = @g.players[0].hand[0]
 
@@ -50,7 +54,9 @@ class TestGame < ActiveSupport::TestCase
     end
 
     test "swap card with stock card - attempt to swap card that isnt in hand - throws exception" do
-        @g.add_player(Player.new(Player.HUMAN, "Susan"))
+        human = Player.new(Player.HUMAN, "Susan")
+        @g.add_player(human)
+        @g.state.dealer = human
         @g.deal_deck
         card_not_in_hand = @g.players[0].hand[0]
 
@@ -60,7 +66,9 @@ class TestGame < ActiveSupport::TestCase
     end
 
     test "swap card with stock card - card exists in hand and stock - swap is successful" do
-        @g.add_player(Player.new(Player.HUMAN, "Susan"))
+        human = Player.new(Player.HUMAN, "Susan")
+        @g.add_player(human)
+        @g.state.dealer = human
         @g.deal_deck
         card_to_swap = @g.players[2].hand[7]
         stock_card = @g.state.stock[1]
@@ -73,7 +81,9 @@ class TestGame < ActiveSupport::TestCase
     end
 
     test "swap card with stock card - cannot discard 5-point cards or matto" do
-        @g.add_player(Player.new(Player.HUMAN, "Susan"))
+        human = Player.new(Player.HUMAN, "Susan")
+        @g.add_player(human)
+        @g.state.dealer = human
         @g.deal_deck
         king_card = Card.new(Card.suits[2], "King");
         bagato = Card.new(Card.suits[4], 1)
@@ -108,7 +118,9 @@ class TestGame < ActiveSupport::TestCase
     end
 
     test "swap card with stock card - can discard bagato if has no other trumps" do
-        @g.add_player(Player.new(Player.HUMAN, "Susan"))
+        human = Player.new(Player.HUMAN, "Susan")
+        @g.add_player(human)
+        @g.state.dealer = human
         @g.deal_deck
         bagato = Card.new(Card.suits[4], 1)
 

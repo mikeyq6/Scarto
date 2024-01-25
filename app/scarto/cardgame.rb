@@ -34,7 +34,6 @@ class Cardgame
     create_deck
     shuffle_deck
     add_computer_players
-    set_dealer
 
     @state.status = 'Initialized'
   end
@@ -61,7 +60,6 @@ class Cardgame
   def add_player(player)
     @players.push(
       player
-      # Player.new(Player.HUMAN, name)
     )
     set_dealer
   end
