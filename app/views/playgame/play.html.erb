@@ -22,7 +22,17 @@
     <% end %>
 </div>
 
+<div class="playing-field"
+    ondrop="dragEnd(event)" ondragover="allowDrop(event)"
+>
+    <% @game.state.current_trick.each do |card| %>
+            <div class="gamecard">
+                <%= image_tag(card.generate_image_name(Player.HUMAN), id: "#{card.suit}_#{card.number}", class: 'card_img', 
+                    'data-suit': card.suit, 'data-number': card.number) %>
+            </div>
 
+    <% end %>
+</div>
 
 <div class="players row">
     <% @game.players.each do |p| %>
