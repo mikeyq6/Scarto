@@ -27,13 +27,26 @@
 <div class="playing-field"
     ondrop="dragEnd(event)" ondragover="allowDrop(event)"
 >
-    <% @game.state.current_trick.each do |card| %>
-            <div class="gamecard">
+    <div class="row">
+    <%  (0..@game.state.trick_length).each do |index| 
+        marginTop = "#{(50 + (index * 30))}px"
+        marginLeft = index == 0 ? '80px' : '-80px'
+        card = @game.state.current_trick[index] 
+        if card %>
+        <div class="col">
+            <div class="gamecard" style="margin-top: <%=marginTop%>; margin-left: <%=marginLeft%>">
                 <%= image_tag(card.generate_image_name(Player.HUMAN), id: "#{card.suit}_#{card.number}", class: 'card_img', 
                     'data-suit': card.suit, 'data-number': card.number) %>
             </div>
-
+        </div>
+        <% else %>
+        <div class="col"></div>
+        <% end %>
     <% end %>
+
+
+
+    </div>
 </div>
 
 <div class="players row">
@@ -81,6 +94,13 @@
         let srcData = {}
 
         console.log('elData', elData)
+
+        // let playedCard = `
+        //     <div class="gamecard" style="margin-top: <%=marginTop%>; margin-left: <%=marginLeft%>">
+        //         <%= image_tag(card.generate_image_name(Player.HUMAN), id: "#{card.suit}_#{card.number}", class: 'card_img', 
+        //             'data-suit': card.suit, 'data-number': card.number) %>
+        //     </div>
+        // `;
         // let targetEl = {}
         // let targetData = {}
 
