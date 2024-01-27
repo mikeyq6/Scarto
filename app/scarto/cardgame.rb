@@ -122,8 +122,9 @@ class Cardgame
 
   def play_card(card)
     player_hand = @state.current_player.hand
+    # byebug
 
-    if !card.in? player_hand
+    if !player_hand.find { |c| c.suit == card.suit && c.number == card.number }
       raise GameException.new "Attempt to play a card not in the current player's hand"
     elsif !check_card_is_valid(player_hand, card, @state.current_trick)
       raise GameException.new "Attempt to play an invalid card"

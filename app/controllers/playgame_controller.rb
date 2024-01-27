@@ -21,8 +21,7 @@ class PlaygameController < ApplicationController
       ai_player_play
     end
     
-    @gameObj.state = @game.to_json
-    @gameObj.save
+    save_game
 
     if @game.state.dealer.type == Player.HUMAN && @game.state.status == 'Awaiting dealer swap'
         render "swap"
@@ -67,6 +66,36 @@ class PlaygameController < ApplicationController
     save_game
   end
 
+  def play_card
+    get_game
+    card = Card.new(params[:cardSuit], params[:cardNumber])
+
+    result = SwapResult.new
+
+    begin
+      @game.play_card(card)
+      # hand = @game.find_hand_with_card(sourceCard)
+      # player = @game.players.find { |player| player.hand == hand }
+
+      # @game.swap_card_with_stock_card(hand, sourceCard, stockCard)
+      # player.sort_hand
+
+      # save_game
+
+      result.status = 'ok'
+
+      save_game
+    rescue GameException => e
+      result.status = 'error'
+      result.errorMessage = e.message
+    end
+
+    render json: result
+
+    return result
+    # byebug
+  end
+
   def get_game
     @gameObj = Game.find(params[:id])
     @game = Cardgame.from_openstruct(JSON.parse(@gameObj.state, object_class: OpenStruct))
@@ -84,7 +113,7 @@ class PlaygameController < ApplicationController
     index = 0
     player = @game.state.current_player
 
-    byebug
+    # byebug
     while !cardToPlay do
       if @game.check_card_is_valid(player.hand, player.hand[index], @game.state.current_trick)
         cardToPlay = player.hand[index]
