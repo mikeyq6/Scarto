@@ -18,7 +18,7 @@ class Cardgame
     data.deck.each do |cardData|
       cardgame.deck.push(Card.from_openstruct(cardData))
     end
-    cardgame.state = State.from_openstruct(data.state)
+    cardgame.state = State.from_openstruct(data.state, cardgame)
 
     # byebug
 
@@ -145,7 +145,7 @@ class Cardgame
       end
 
       if @state.current_player.hand.length == 0
-        @g.state.status = "Finished"
+        @state.status = "Finished"
         process_game_winner
       end
     end
@@ -193,7 +193,7 @@ class Cardgame
           highest_card = trick[1]
         end
       end
-      if trick[2].suit == Card.suits[4]
+      if @state.trick_length == 3 && trick[2].suit == Card.suits[4]
         if highest_card == nil
           highest_card = trick[2]
         elsif trick[2].is_greater_than(highest_card)

@@ -6,14 +6,18 @@ class PlaygameController < ApplicationController
     require 'json'
 
     @gameObj = Game.find(params[:id])
-
-    if @gameObj.status == "New" 
-        @game = Cardgame.new
-        @game.add_player(Player.new(Player.HUMAN, @gameObj.firstname))
-        @game.deal_deck
-        @gameObj.status = "Active"
+# byebug
+    if @gameObj.status == "Finished"
+      @game = Cardgame.from_openstruct(JSON.parse(@gameObj.state, object_class: OpenStruct))
+      render "results"
+      return
+    elsif @gameObj.status == "New" 
+      @game = Cardgame.new
+      @game.add_player(Player.new(Player.HUMAN, @gameObj.firstname))
+      @game.deal_deck
+      @gameObj.status = "Active"
     else
-        @game = Cardgame.from_openstruct(JSON.parse(@gameObj.state, object_class: OpenStruct))
+      @game = Cardgame.from_openstruct(JSON.parse(@gameObj.state, object_class: OpenStruct))
     end
 
 
@@ -83,6 +87,10 @@ class PlaygameController < ApplicationController
       # save_game
 
       result.status = 'ok'
+
+      if @game.state.status == "Finished"
+        @gameObj.status = "Finished"
+      end
 
       save_game
     rescue GameException => e
