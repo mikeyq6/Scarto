@@ -50,7 +50,17 @@ class Card
     elsif card.number.instance_of?(Integer) && @number.instance_of?(String)
       true
     elsif card.number.instance_of?(Integer) && @number.instance_of?(Integer)
-      @number > card.number
+      if @suit == @@suits[4] 
+        if card.number == 21 && @number == 20
+          return true
+        elsif card.number == 20 && @number == 21
+          return false
+        else
+          @number > card.number
+        end
+      else
+        @number > card.number
+      end
     else
       if @number == "Knave"
         false

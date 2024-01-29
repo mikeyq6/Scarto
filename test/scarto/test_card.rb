@@ -40,6 +40,14 @@ class TestCard < ActiveSupport::TestCase
         assert(!c2.is_greater_than(c1), "Ace is smaller than Knave")
     end
 
+    test "is_greater_than - test 21 vs 20 trump cards" do
+        c1 = Card.new(Card.suits[4], 21)
+        c2 = Card.new(Card.suits[4], 20)
+
+        assert(!c1.is_greater_than(c2), "21 should not be higher than 20 in trumps")
+        assert(c2.is_greater_than(c1), "20 should be higher than 21 in trumps")
+    end
+
     test "is_greater_than_with_suit__same_suit_uses_number" do
         c1 = Card.new(Card.suits[0], 10)
         c2 = Card.new(Card.suits[0], "Queen")
