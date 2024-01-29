@@ -131,4 +131,36 @@ class TestCard < ActiveSupport::TestCase
         assert_equal(10, c5.number)
         assert_equal("Knave", c6.number)
     end
+
+    test "get_highest_card_of_suit - returns correct card" do
+        c1 = Card.new(Card.suits[0], "Queen")
+        c2 = Card.new(Card.suits[2], 3)
+        c3 = Card.new(Card.suits[4], 13)
+        c4 = Card.new(Card.suits[2], 4)
+        c5 = Card.new(Card.suits[1], 10)
+        c6 = Card.new(Card.suits[1], "Knave")
+        c7 = Card.new(Card.suits[0], 7)
+        c8 = Card.new(Card.suits[0], "King")
+        c9 = Card.new(Card.suits[4], 21)
+        c10 = Card.new(Card.suits[4], 20)
+        c11 = Card.new(Card.suits[3], 1)
+
+        hand = [ c1, c2, c3 ,c4 ,c5, c6, c7, c8, c9, c10, c11 ]
+
+        assert_equal(c8, Card.get_highest_card_of_suit(hand, Card.suits[0]))
+        assert_equal(c6, Card.get_highest_card_of_suit(hand, Card.suits[1]))
+        assert_equal(c4, Card.get_highest_card_of_suit(hand, Card.suits[2]))
+        assert_equal(c11, Card.get_highest_card_of_suit(hand, Card.suits[3]))
+        assert_equal(c10, Card.get_highest_card_of_suit(hand, Card.suits[4]))
+    end
+
+    test "get_highest_card_of_suit - no matching card of that suit, returns nil" do
+        c1 = Card.new(Card.suits[0], "Queen")
+        c2 = Card.new(Card.suits[2], 3)
+        c3 = Card.new(Card.suits[4], 13)
+
+        hand = [ c1, c2, c3 ]
+
+        assert_nil(Card.get_highest_card_of_suit(hand, Card.suits[3]))
+    end
 end

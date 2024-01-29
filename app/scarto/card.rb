@@ -19,6 +19,26 @@ class Card
     Card.new(data.suit, data.number)
   end
 
+  def self.get_highest_card_of_suit(hand, suit)
+    if !hand.find { |c| c.suit == suit }
+      return nil
+    end
+
+    highest_card = nil
+    cards = hand.find_all { |c| c.suit == suit }
+    cards.each do |c|
+      if !highest_card
+        highest_card = c
+      else
+        if c.is_greater_than(highest_card)
+          highest_card = c
+        end
+      end
+    end
+
+    return highest_card
+  end
+
   def initialize(suit, number)
     @suit = suit
     @number = number
