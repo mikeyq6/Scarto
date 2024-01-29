@@ -39,6 +39,26 @@ class Card
     return highest_card
   end
 
+  def self.get_lowest_card_of_suit(hand, suit)
+    if !hand.find { |c| c.suit == suit }
+      return nil
+    end
+
+    lowest_card = nil
+    cards = hand.find_all { |c| c.suit == suit }
+    cards.each do |c|
+      if !lowest_card
+        lowest_card = c
+      else
+        if lowest_card.is_greater_than(c)
+          lowest_card = c
+        end
+      end
+    end
+
+    return lowest_card
+  end
+
   def initialize(suit, number)
     @suit = suit
     @number = number
