@@ -550,7 +550,7 @@ class TestGame < ActiveSupport::TestCase
         @s.stock = [ c1, c2, c3 ]
 
         stateJson = @s.to_json
-        s2 = State.from_openstruct(JSON.parse(stateJson, object_class: OpenStruct))
+        s2 = State.from_openstruct(JSON.parse(stateJson, object_class: OpenStruct), @g)
 
         assert_equal(@s.status, s2.status)
         assert_equal(@s.trick_length, s2.trick_length)
