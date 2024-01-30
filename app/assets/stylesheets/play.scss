@@ -34,10 +34,14 @@
     &.type-computer {
         .hand {
             .gamecard {
-                margin-left: -145px;
+                margin-left: -95px;
 
                 &:first-child {
                     margin-left: 0;
+                }
+
+                img.card_img {
+                    width: 100px;
                 }
             }
         }

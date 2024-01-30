@@ -16,6 +16,9 @@ class PlaygameController < ApplicationController
       @game.add_player(Player.new(Player.HUMAN, @gameObj.firstname))
       @game.deal_deck
       @gameObj.status = "Active"
+      if(@game.state.dealer.type == Player.COMPUTER)
+        @game.start_game
+      end
     else
       @game = Cardgame.from_openstruct(JSON.parse(@gameObj.state, object_class: OpenStruct))
     end
@@ -28,7 +31,7 @@ class PlaygameController < ApplicationController
     end
 
     while @game.state.current_player.type == Player.COMPUTER do
-      ai_player_play
+      ai_player_play([])
     end
     
     save_game
@@ -80,8 +83,8 @@ class PlaygameController < ApplicationController
     get_game
     card = Card.new(params[:cardSuit], params[:cardNumber])
 
-    result = SwapResult.new
-
+    result = PlayResult.new
+# byebug
     begin
       @game.play_card(card)
       # hand = @game.find_hand_with_card(sourceCard)
@@ -92,15 +95,24 @@ class PlaygameController < ApplicationController
 
       # save_game
       # have any ai players finish their turns
-      while @game.state.status != "Finished" && @game.state.current_player.type == Player.COMPUTER do
-        ai_player_play
-      end
+      additional_cards = []
+      # if @game.state.current_trick.length < @game.state.trick_length
+      while @game.state.current_trick.length > 0 && @game.state.current_trick.length < @game.state.trick_length && @game.state.status != "Finished" && @game.state.current_player.type == Player.COMPUTER do
+        ai_player_play(additional_cards)
+# byebug
 
+        # additional_cards.push(@game.state.current_trick.last.to_json)
+      end
+      # end
+
+      result.hasAdditionalCards = additional_cards.size > 0
+      result.additionalCardJson = additional_cards.to_json
       result.status = 'ok'
 
       if @game.state.status == "Finished"
         @gameObj.status = "Finished"
       end
+      result.stateJson = @game.to_json
 
       save_game
     rescue GameException => e
@@ -125,7 +137,7 @@ class PlaygameController < ApplicationController
   end
     
   private
-  def ai_player_play
+  def ai_player_play(additional_cards)
     # Initially just play the first playable card he has
     cardToPlay = nil
     index = 0
@@ -133,12 +145,13 @@ class PlaygameController < ApplicationController
 
     # byebug
     # Make it slightly smarter, play a low card if leading and a high card if playing
-    
     if @game.state.current_trick.size == 0
       while !cardToPlay do
         if @game.check_card_is_valid(player.hand, player.hand[index], @game.state.current_trick)
           cardToPlay = player.hand[index]
           @game.play_card(cardToPlay)
+          additional_cards.push(CardData.new(cardToPlay))
+          break
         end
         index = index + 1
       end
@@ -156,10 +169,26 @@ class PlaygameController < ApplicationController
       end
       
       @game.play_card(cardToPlay)
+      additional_cards.push(CardData.new(cardToPlay))
     end
   end
 end
 
 class SwapResult
     attr_accessor :status, :errorMessage
+end
+
+class PlayResult < SwapResult
+  attr_accessor :additionalCardJson, :hasAdditionalCards, :stateJson
+end
+
+class CardData
+  attr_accessor :name, :number, :suit, :imgName
+
+  def initialize(card)
+    @name = card.name
+    @number = card.number
+    @suit = card.suit
+    @imgName = card.generate_image_name(Player.HUMAN)
+  end
 end

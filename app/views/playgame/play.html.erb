@@ -1,10 +1,4 @@
-<h1>Playing!</h1>
-
-<h4>Welcome <%= @gameObj.firstname %>
-
 <h5>It is currently <%= @game.state.current_player.name %>'s turn</h5>
-
-<h4>Players: </h4>
 
 <div class="players row">
     <% @game.players.each do |p| %>
@@ -43,9 +37,12 @@
         </div>
         <% end %>
     <% end %>
+    </div>
+</div>
 
-
-
+<div class="row">
+    <div class="col">
+        <%= button_to 'Next', "/play/#{@gameObj.id}", method: :get, class: 'btn btn-sm btn-primary next-button', disabled: 'disabled' %>
     </div>
 </div>
 
@@ -97,47 +94,40 @@
         srcEl = document.querySelector('#' + elData.id);
         const cardData = getCardData(srcEl);
 
-        console.log('cardData', cardData)
-        // console.log('ev', ev.target)
-        //     srcData = elData
-
-        // console.log('elData', elData)
-
-        // let playedCard = `
-
-        // `;
-
-
         playCard(cardData)
             .then((responseData) => {
                 result = JSON.parse(responseData);
 
                 if(result.status === 'ok') {
-                    console.log('ok, play card')
-                    // setCardData(targetEl, srcData);
+                    srcEl.parentElement.remove();
+
+                    const additionalCards = JSON.parse(result.additionalCardJson);
+                    console.log('additional cards: ', additionalCards)
+                    console.log('game state: ', JSON.parse(result.stateJson))
+
                     marginTop = "<%=(50 + (@game.state.current_trick.size * 30))%>px";
                     marginLeft = "<%=@game.state.current_trick.size == 0 ? '80px' : '-80px' %>";
-                    // const imgEl = srcEl.querySelector('img');
-                    // console.log('imgEl', imgEl)
-                    const cardPlayedHtml = `
-                    <div class="col">
-                        <div class="gamecard" style="margin-top: ${marginTop}; margin-left: ${marginLeft}">
-                            <img src="${srcEl.src}" id="${srcEl.id}" class="card_img" />
-                        </div>
-                    </div>
-                    `;
+
+                    let cardPlayedHtml = getCardHtml(srcEl.src, srcEl.id, marginTop, marginLeft)
                     const playingFieldRow = document.querySelector('.playing-field .row');
                     playingFieldRow.insertAdjacentHTML("beforeend", cardPlayedHtml);
                     console.log('cardPlayedHtml', cardPlayedHtml)
+
+                    additionalCards.forEach((card, index) => {
+                        marginTop = `${(50 + (additionalCards.length - 1 + index)  * 30)}px`;
+                        marginLeft = '-80px';
+                        cardPlayedHtml = getCardHtml(`/assets/${card.imgName}`, card.name, marginTop, marginLeft);
+                        playingFieldRow.insertAdjacentHTML("beforeend", cardPlayedHtml);
+                    });
+
+                    document.querySelector('.next-button').disabled = false;
                 } else {
                     createToast(result.errorMessage);
                 }
-                console.log('result', result);
             })
             .catch((result) => {
                 console.log('result', result)
-                console.log('failed')
-                    createToast(result);
+                createToast(result);
             });
     };
 
@@ -172,6 +162,15 @@
             imgSrc: cardImgEl.src
         };
     };
+
+    const getCardHtml = (imgSrc, imgId, marginTop, marginLeft) => {
+        return `<div class="col">
+            <div class="gamecard" style="margin-top: ${marginTop}; margin-left: ${marginLeft}">
+                <img src="${imgSrc}" id="${imgId}" class="card_img" />
+            </div>
+        </div>
+        `;
+    }
 
     const createToast = (message) => {
         const toastHtml = `<div id="toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
