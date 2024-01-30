@@ -4,10 +4,11 @@
 <h2>Current Games</h2>
 <div class="row mb-4">
     <div class="col">
-        <table>
+        <table class="table">
             <thead>
                 <tr>
-                    <th>Name</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Status</th>
                     <th></th>
                 </tr>
             </thead>
@@ -15,10 +16,11 @@
                 <% @games.each do |game| %>
                 <tr>
                     <td><%= game.firstname %></td>
+                    <td><%= game.status %></td>
                     <td class="button-row">
                         <%= link_to 'View', game_path(game), class: 'btn btn-sm btn-secondary' %>
                         <%= link_to 'Edit', edit_game_path(game), class: 'btn btn-sm btn-secondary' %>
-                        <%= link_to 'Play', "/play/#{game.id}", class: 'btn btn-sm btn-secondary' %>
+                        <%= link_to (game.status != 'Finished' ? 'Play' : 'View Result'), "/play/#{game.id}", class: 'btn btn-sm btn-secondary' %>
                         <%= button_to 'Delete', game_path(game), method: :delete, class: 'btn btn-sm btn-danger' %>
                     </td>
                 </tr>
