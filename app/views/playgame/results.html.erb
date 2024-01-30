@@ -1,3 +1,48 @@
 <h4>Results</h4>
 
+<%= link_to 'Back to Games list', games_path(@game), class: 'btn btn-secondary' %>
+
 <p>Winning player: <%=@game.state.winning_player.name %></p>
+
+<ul class="nav nav-tabs">
+  <% @game.players.each do |p| %>
+  <li class="nav-item">
+    <button class="nav-link" id="<%=p.name%>-tab" data-bs-toggle="tab" data-bs-target="#<%=p.name%>-pane" type="button" role="tab" aria-controls="<%=p.name%>-pane"><%=p.name%></button>  
+  </li>
+  <% end %>
+</ul>
+
+<div class="tab-content" id="myTabContent">
+  <% @game.players.each do |p| %>
+  <div class="tab-pane fade" id="<%=p.name%>-pane" role="tabpanel" aria-labelledby="<%=p.name%>" tabindex="0">
+  <h4>Total score: <%=p.score%>. Tricks won:</h4>
+
+    <% p.tricks.each do |trick| %>
+    <div class="trick">
+        <div class="row">
+            <% trick.each do |card| %>
+            <div class="col-3">
+                <div class="gamecard">
+                    <%= image_tag(card.generate_image_name(Player.HUMAN), class: 'card_img') %>
+                </div>
+            </div>
+            <% end %>
+            <div class="col-3">Value: <%= @game.score_trick(trick) %></div>
+        </div>
+    </div>
+    <% end %>
+  </div>
+  <% end %>
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+        const tab = document.querySelector('.nav-link');
+        tab.classList.add('active');
+
+        const tabContent = document.querySelector('.tab-pane');
+        tabContent.classList.add('show');
+        tabContent.classList.add('active');
+    });
+</script>

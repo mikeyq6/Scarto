@@ -1,0 +1,11 @@
+.trick {
+    .gamecard {
+        display: inline-flex;
+        position: relative;
+        border: 1px solid black;
+    }
+
+    img.card_img {
+        width: 150px;
+    }
+}
