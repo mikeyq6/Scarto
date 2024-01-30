@@ -1,6 +1,10 @@
 .player {
+    h4 {
+        display: inline-block;
+    }
+    
     .first {
-        background-color: pink;
+        background-color: transparent;
     }
 
     .hand {
@@ -59,10 +63,11 @@
 }
 
 .playing-field {
-    display: inline-block;
+    display: block;
     width: 500px;
-    height: 500px;
+    height: 400px;
     background-color: green;
+    margin: 15px auto;
 
     .col {
         padding: 0;
