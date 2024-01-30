@@ -10,6 +10,9 @@
     <% @game.players.each do |p| %>
     <% if p.type == 1 %>
     <div class="player type-computer col-6">
+        <% if @game.state.first_player.name == p.name %>
+        <i class="fa-solid fa-crown"></i>
+        <% end %>
         <h4 class="<%= @game.state.first_player.name == p.name ? "first" : "" %>"><%= p.name %> Tricks won: <%=p.tricks.size%></h4>
 
         <div class="hand">
@@ -50,6 +53,9 @@
     <% @game.players.each do |p| %>
     <% if p.type == 2 %>
     <div class="player type-human col-12">
+        <% if @game.state.first_player.name == p.name %>
+        <i class="fa-solid fa-crown"></i>
+        <% end %>
         <h4 class="<%= @game.state.first_player.name == p.name ? "first" : "" %>"><%= p.name %> Tricks won: <%=p.tricks.size%></h4>
 
         <div class="hand">
