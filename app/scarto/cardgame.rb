@@ -20,8 +20,6 @@ class Cardgame
     end
     cardgame.state = State.from_openstruct(data.state, cardgame)
 
-    # byebug
-
     return cardgame
   end
 

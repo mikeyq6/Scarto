@@ -20,6 +20,12 @@ class PlaygameController < ApplicationController
       @game = Cardgame.from_openstruct(JSON.parse(@gameObj.state, object_class: OpenStruct))
     end
 
+    if @game.state.status == "Finished"
+      @gameObj.status = "Finished"
+      save_game
+      render "results"
+      return
+    end
 
     while @game.state.current_player.type == Player.COMPUTER do
       ai_player_play
@@ -85,6 +91,10 @@ class PlaygameController < ApplicationController
       # player.sort_hand
 
       # save_game
+      # have any ai players finish their turns
+      while @game.state.status != "Finished" && @game.state.current_player.type == Player.COMPUTER do
+        ai_player_play
+      end
 
       result.status = 'ok'
 
@@ -100,7 +110,7 @@ class PlaygameController < ApplicationController
 
     render json: result
 
-    return result
+    # return result
     # byebug
   end
 

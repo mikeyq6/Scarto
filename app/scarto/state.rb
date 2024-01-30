@@ -21,6 +21,9 @@ class State
     if data.first_player
       s.first_player = cardgame.players.find { |p| p.name == data.first_player.name } #Player.from_openstruct(data.first_player)
     end
+    if data.winning_player
+      s.winning_player = cardgame.players.find { |p| p.name == data.winning_player.name } 
+    end
 
     return s
   end
