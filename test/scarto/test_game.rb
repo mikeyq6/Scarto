@@ -271,7 +271,6 @@ class TestGame < ActiveSupport::TestCase
         assert_equal(@g.players[0].name, @g.state.first_player.name)
     end
 
-
     test "process end of hand - correct player wins trick with trumps played" do
         @g.add_player(Player.new(Player.HUMAN, "Susan"))
         @g.deal_deck
@@ -295,6 +294,56 @@ class TestGame < ActiveSupport::TestCase
         assert_equal(0, @g.state.current_trick.length)
         assert_equal(@g.players[2].name, @g.state.current_player.name)
         assert_equal(@g.players[2].name, @g.state.first_player.name)
+    end
+
+    test "process end of hand - correct player wins trick with highest trump played" do
+        @g.add_player(Player.new(Player.HUMAN, "Susan"))
+        @g.deal_deck
+        @g.start_game
+
+        @g.state.first_player = @g.players[0]
+        @g.state.current_player = @g.players[0] # last player to play
+        c1 = Card.new(Card.suits[4], 6)
+        c2 = Card.new(Card.suits[4], 14)
+        c3 = Card.new(Card.suits[4], 20)
+        p1_tricks = @g.players[0].tricks.length
+        p2_tricks = @g.players[1].tricks.length
+        p3_tricks = @g.players[2].tricks.length
+
+        @g.state.current_trick = [ c1, c2, c3 ]
+        @g.process_end_of_hand
+
+        assert_equal(p1_tricks, @g.players[0].tricks.length)
+        assert_equal(p2_tricks, @g.players[1].tricks.length)
+        assert_equal(p3_tricks + 1, @g.players[2].tricks.length)
+        assert_equal(0, @g.state.current_trick.length)
+        assert_equal(@g.players[2].name, @g.state.current_player.name)
+        assert_equal(@g.players[2].name, @g.state.first_player.name)
+    end
+
+    test "process end of hand - correct player wins trick in weird failure" do
+        @g.add_player(Player.new(Player.HUMAN, "Susan"))
+        @g.deal_deck
+        @g.start_game
+
+        @g.state.first_player = @g.players[2]
+        @g.state.current_player = @g.players[2] # last player to play
+        c1 = Card.new(Card.suits[0], 1)
+        c2 = Card.new(Card.suits[4], 1)
+        c3 = Card.new(Card.suits[4], 9)
+        p1_tricks = @g.players[0].tricks.length
+        p2_tricks = @g.players[1].tricks.length
+        p3_tricks = @g.players[2].tricks.length
+
+        @g.state.current_trick = [ c1, c2, c3 ]
+        @g.process_end_of_hand
+
+        assert_equal(p1_tricks, @g.players[0].tricks.length)
+        assert_equal(p2_tricks + 1, @g.players[1].tricks.length)
+        assert_equal(p3_tricks, @g.players[2].tricks.length)
+        assert_equal(0, @g.state.current_trick.length)
+        assert_equal(@g.players[1].name, @g.state.current_player.name)
+        assert_equal(@g.players[1].name, @g.state.first_player.name)
     end
 
     test "process end of hand - correct player wins trick when matto played first" do

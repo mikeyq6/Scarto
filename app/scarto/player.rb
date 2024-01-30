@@ -44,7 +44,8 @@ class Player
   end
 
   def has_matto_trick
-    if tricks.find { |t| t[0].suit == Card.suits[4] && t[0].number == 0 }
+    # byebug
+    if tricks.find { |t| t.size > 0 && t[0].suit == Card.suits[4] && t[0].number == 0 }
         return true
     end
 
