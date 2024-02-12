@@ -10,7 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_01_18_173402) do
+ActiveRecord::Schema.define(version: 2024_02_12_144035) do
+
+  create_table "game_players", force: :cascade do |t|
+    t.integer "game_id"
+    t.string "name"
+    t.decimal "player_type"
+    t.decimal "ai_level"
+    t.index ["game_id"], name: "index_game_players_on_game_id"
+  end
 
   create_table "games", force: :cascade do |t|
     t.string "firstname"
