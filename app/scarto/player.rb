@@ -2,7 +2,10 @@ class Player
   @@COMPUTER = 1
   @@HUMAN = 2
 
-  attr_accessor :name, :hand, :tricks, :type, :score
+  @@SIMPLE_AI = 0
+  @@MODERATE_AI = 1
+
+  attr_accessor :name, :hand, :tricks, :type, :score, :ai_level
   attr_reader :id
 
   def self.COMPUTER
@@ -11,6 +14,12 @@ class Player
   def self.HUMAN
     @@HUMAN
   end
+  def self.SIMPLE_AI
+    @@SIMPLE_AI
+  end
+  def self.MODERATE_AI
+    @@MODERATE_AI
+  end
 
   def initialize(player_type, player_name)
     @type = player_type
@@ -18,6 +27,7 @@ class Player
     @tricks = []
     @hand = []
     @score = 0
+    @ai_level = @@SIMPLE_AI
   end
 
   def self.from_openstruct(data)
@@ -25,6 +35,7 @@ class Player
     playerName = data.name
     player = Player.new(playerType, playerName)
     player.score = data.score
+    player.ai_level = data.ai_level ? data.ai_level : @@SIMPLE_AI
 
     data.hand.each do |cardData|
       player.hand.push(Card.from_openstruct(cardData))

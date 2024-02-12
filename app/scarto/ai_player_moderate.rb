@@ -1,0 +1,3 @@
+class AIPlayerModerate < AIPlayer
+
+end
