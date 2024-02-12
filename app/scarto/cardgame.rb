@@ -175,7 +175,7 @@ class Cardgame
       if trick[1].suit == highest_card.suit && trick[1].is_greater_than(highest_card)
         highest_card = trick[1]
       end
-      if(@state.trick_length == 3)
+      if @state.trick_length == 3
         if trick[2].suit == highest_card.suit && trick[2].is_greater_than(highest_card)
           highest_card = trick[2]
         end
@@ -201,7 +201,8 @@ class Cardgame
     end
 
     highest_card_index = get_card_index(trick, highest_card) #trick.find_index(highest_card)
-    winning_player_index = (get_player_index(@state.first_player) + highest_card_index) % 3
+    first_player_index = @state.first_player.has_matto_trick ? (get_player_index(@state.first_player) + 1) % 3 : get_player_index(@state.first_player)
+    winning_player_index = (first_player_index + highest_card_index) % 3
 
     # what is this code for!?
     # if @players[winning_player_index].has_matto_trick
