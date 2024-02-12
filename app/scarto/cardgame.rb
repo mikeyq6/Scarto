@@ -201,7 +201,7 @@ class Cardgame
     end
 
     highest_card_index = get_card_index(trick, highest_card) #trick.find_index(highest_card)
-    first_player_index = @state.first_player.has_matto_trick ? (get_player_index(@state.first_player) + 1) % 3 : get_player_index(@state.first_player)
+    first_player_index = @state.first_player.has_matto_trick && @state.trick_length == 2 ? (get_player_index(@state.first_player) + 1) % 3 : get_player_index(@state.first_player)
     winning_player_index = (first_player_index + highest_card_index) % 3
 
     # what is this code for!?
