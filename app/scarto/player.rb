@@ -87,4 +87,31 @@ class Player
     end
   end
 
+  def get_lowest_card_of_suit_with_least_cards_except_trumps
+    tabs = {}
+    lowest = ""
+
+    if @hand.length == 0
+      return nil
+    end
+
+    Card.suits.each do |s|
+      tabs[s] = @hand.filter { |card| card.suit == s }
+      if (lowest == "" || tabs[s].length < tabs[lowest].length) && tabs[s].length > 0 && s != Card.suits[4]
+        lowest = s
+      end
+    end
+
+    if lowest == "" # no suits left except trumps, so get lowest trump
+      lowest = Card.suits[4]
+    end
+
+    return tabs[lowest][0]
+  end
+
+  def get_lowest_card_of_suit_higher_than(targetCard)
+    matching = @hand.filter { |card| card.suit == targetCard.suit && card.is_greater_than(targetCard) }
+
+    return matching.size > 0 ? matching[0] : nil
+  end
 end
