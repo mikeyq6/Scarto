@@ -7,14 +7,18 @@ class PlaygameController < ApplicationController
     require 'json'
 
     @gameObj = Game.find(params[:id])
-# byebug
+
     if @gameObj.status == "Finished"
       @game = Cardgame.from_openstruct(JSON.parse(@gameObj.state, object_class: OpenStruct))
       render "results"
       return
     elsif @gameObj.status == "New" 
       @game = Cardgame.new
-      @game.add_player(Player.new(Player.HUMAN, @gameObj.firstname))
+# byebug
+      @gameObj.game_players.each do |gp|
+        @game.add_player(Player.new(gp.player_type.to_i, gp.name))
+      end
+
       @game.deal_deck
       @gameObj.status = "Active"
       if(@game.state.dealer.type == Player.COMPUTER)

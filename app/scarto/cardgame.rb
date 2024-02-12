@@ -31,7 +31,7 @@ class Cardgame
 
     create_deck
     shuffle_deck
-    add_computer_players
+    # add_computer_players
 
     @state.status = 'Initialized'
   end

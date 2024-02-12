@@ -5,17 +5,19 @@ class TestGame < ActiveSupport::TestCase
 
     def setup
         @g = Cardgame.new
+        @g.add_player(Player.new(Player.COMPUTER, "PC1"))
+        @g.add_player(Player.new(Player.COMPUTER, "PC2"))
     end
 
     test "deck created with 78 cards" do
         assert_equal(78, @g.deck.length, "Wrong number of cards in deck")
     end
     
-    test "computer players created" do
-        assert_equal(2, @g.players.length, "Should have 2 computer players")
-        assert_equal(Player.COMPUTER, @g.players[0].type)
-        assert_equal(Player.COMPUTER, @g.players[1].type)
-    end
+    # test "computer players created" do
+    #     assert_equal(2, @g.players.length, "Should have 2 computer players")
+    #     assert_equal(Player.COMPUTER, @g.players[0].type)
+    #     assert_equal(Player.COMPUTER, @g.players[1].type)
+    # end
 
     test "add_player - adds human player" do
         @g.add_player(Player.new(Player.HUMAN, "Susan"))
